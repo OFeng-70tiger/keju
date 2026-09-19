@@ -1,419 +1,984 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>论语 · 每日学习目录</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
-            background: #faf8f5; color: #2c2c2c;
-            display: flex; justify-content: center;
-            padding: 3rem 1.5rem;
-        }
-        .app { max-width: 900px; width: 100%; display: flex; flex-direction: column; gap: 2rem; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登科录 · 古代科举一次看透</title>
+<style>
+/* ===== 色系与质感：参照《姑苏繁华图导读》暖纸鎏金风 ===== */
+:root{
+  --ink:#3a3020; --ink2:#7a6c52; --line:#e3d8c2; --gold:#a5721f; --gold2:#c99b45;
+  --bg:#f7f3ea; --card:#fffdf7; --ok:#2e7d4f; --warn:#b0641e;
+  --accent:#a5721f; --accent-soft:#efe4c8; --gold-soft:#f4eedd;
+  --muted:#7a6c52; --panel:#fffdf7; --src-bg:#fbf7ec;
+  --serif-display:"STZhongsong","华文中宋","Noto Serif SC",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.85}
+a{color:var(--gold)}
+.layout{display:flex;min-height:100vh;max-width:1280px;margin:0 auto;align-items:flex-start}
 
-        .header { border-bottom: 2px solid #d4c5a0; padding-bottom: 1.8rem; }
-        .intro-row {
-            display: flex; align-items: center; gap: 2rem;
-            text-align: left; margin-bottom: 1.5rem;
-        }
-        .intro-img { flex: 0 0 140px; text-align: center; }
-        .intro-img img {
-            width: 140px; height: auto; border-radius: 12px;
-            border: 1px solid #dacfc0; box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-        }
-        .intro-img .img-caption {
-            font-size: 0.75rem; color: #8a7a64; margin-top: 0.4rem;
-        }
-        .intro-text { flex: 1; }
-        .intro-text h1 {
-            font-size: 2.2rem; font-weight: 500; letter-spacing: 6px;
-            color: #3e2e1f; margin-bottom: 0.6rem;
-        }
-        .intro-text p {
-            font-size: 0.95rem; line-height: 1.8; color: #5a4a38;
-        }
-        .header .sub {
-            color: #6b5a44; font-size: 1rem;
-            display: flex; gap: 1.2rem; flex-wrap: wrap;
-        }
-        .header .sub span { background: #e8e0d4; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.9rem; }
-        .progress-bar {
-            background: #e2d7c8; height: 6px; border-radius: 6px; overflow: hidden;
-            margin-top: 1.2rem;
-        }
-        .progress-bar .fill { background: #8b6f50; height: 100%; width: 0%; border-radius: 6px; transition: width 0.4s; }
+/* ===== 树状侧栏（参考版目录样式） ===== */
+aside{width:266px;background:transparent;border-right:1px solid var(--line);padding:24px 12px 60px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+aside::-webkit-scrollbar{width:6px} aside::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.brand{font-family:var(--serif-display);font-size:26px;color:var(--gold);letter-spacing:7px;font-weight:800}
+.brand-sub{font-size:12px;color:var(--ink2);margin:4px 0 16px;letter-spacing:1.5px}
+.search-box input{width:100%;padding:9px 14px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;background:#fff;color:var(--ink);outline:none;margin-bottom:14px;transition:border-color .2s}
+.search-box input:focus{border-color:var(--gold2)}
+.tree,.tree ul{list-style:none}
+.tree ul{padding-left:12px;border-left:1px dotted #d8c9a3;margin-left:10px}
+.tree li{margin:1px 0}
+.tree .node>a,.tree .node>span{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:8px;font-size:14px;color:var(--ink);text-decoration:none;cursor:pointer;transition:background .15s}
+.tree .node>a:hover{background:#efe7d3;color:var(--gold)}
+.tree .node.l1>a{font-weight:700;color:var(--ink);font-size:14.5px;letter-spacing:.5px}
+.tree .node.l1>a:hover{color:var(--gold)}
+.tree .caret{width:13px;text-align:center;color:var(--gold2);transition:transform .2s;font-size:11px;flex-shrink:0}
+.tree .closed>ul{display:none}
+.tree .closed>.node>span .caret{transform:rotate(-90deg)}
+.tree .twig{color:#d8c9a3;font-size:10px}
+.tree .badge{margin-left:auto;font-size:10.5px;background:#f4eedd;color:var(--gold);border-radius:999px;padding:0 7px}
+.legend{margin-top:16px;font-size:11.5px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:12px;line-height:1.9}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:1px}
 
-        .jinju-section {
-            background: #fffcf7; border: 1px solid #e2d7c8;
-            border-radius: 20px; padding: 1.6rem 1.8rem;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
-        }
-        .jinju-section h2 {
-            font-size: 1.15rem; font-weight: 600; color: #4d3e2b;
-            letter-spacing: 1px; border-bottom: 1px solid #dacfc0;
-            padding-bottom: 0.7rem; margin-bottom: 0.9rem;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .jinju-section h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
-        .jinju-section .intro-text {
-            font-size: 0.9rem; line-height: 1.8; color: #5a4a38;
-            margin-bottom: 1.2rem; padding: 0.8rem 1.2rem;
-            background: #fcfaf7; border-left: 4px solid #b7a084;
-            border-radius: 10px;
-        }
-        .jinju-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .jinju-grid a {
-            display: block; text-decoration: none;
-            padding: 0.55rem 0.6rem; border-radius: 10px;
-            background: #f7f2ea; transition: 0.15s;
-            font-size: 0.85rem; color: #3d3429;
-            text-align: center; white-space: nowrap;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-        .jinju-grid a:hover { background: #ede6db; color: #2c1f12; }
-        .jinju-grid a .ref { font-size: 0.7rem; color: #8a7a64; margin-left: 2px; }
-        .jinju-more {
-            text-align: center; padding-top: 0.6rem;
-            border-top: 1px dashed #e2d7c8;
-        }
-        .jinju-more a {
-            display: inline-block; color: #826a4e;
-            background: #f0e9df; border: 1px solid #cbbba8;
-            padding: 0.4rem 2rem; border-radius: 40px;
-            font-size: 0.9rem; text-decoration: none;
-            transition: 0.2s;
-        }
-        .jinju-more a:hover { background: #e8ddd0; border-color: #9b846b; }
+/* ===== 主区 ===== */
+main{flex:1;min-width:0;padding:26px clamp(14px,4vw,56px) 80px 22px}
+header.hero{background:linear-gradient(150deg,#332a1c 0%,#4c3f2a 55%,#6b5a38 100%);color:#f2e9d5;border-radius:14px;padding:38px 36px;margin-bottom:30px;box-shadow:0 6px 18px rgba(70,55,30,.18)}
+header.hero h2{font-family:var(--serif-display);font-size:32px;letter-spacing:7px;font-weight:700;color:#f2e9d5}
+header.hero p{color:#d8c9a3;font-size:14px;margin-top:12px;letter-spacing:.5px}
+header.hero b{color:#e2c37a!important}
 
-        .book-nav {
-            background: #fffcf7; border: 1px solid #e2d7c8;
-            border-radius: 20px; padding: 1.5rem 1.2rem;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
-        }
-        .book-nav h2 {
-            font-size: 1rem; font-weight: 600; color: #4d3e2b;
-            letter-spacing: 1px; margin-bottom: 1rem;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .book-nav h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.5rem;
-        }
-        .book-grid a {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 0.6rem 0.3rem; border-radius: 10px;
-            text-decoration: none; color: #3d3429;
-            background: #f7f2ea; transition: 0.15s;
-            font-size: 0.85rem; text-align: center;
-        }
-        .book-grid a:hover { background: #ede6db; }
-        .book-grid a .num { font-size: 0.7rem; color: #8a7a64; }
-        .book-grid a .name { font-weight: 500; margin-top: 2px; }
-        .book-grid a.done { background: #e8f0e8; color: #2e5e2e; }
-        .book-grid a.done .num { color: #5a8a5a; }
-        .book-grid a.current { background: #eadecd; color: #2c1f12; }
-        .book-grid a.current .num { color: #8b6f50; }
-        .book-grid a.disabled { opacity: 0.45; pointer-events: none; }
+/* ===== 章节与卡片（参考版 section 卡样式） ===== */
+section{margin-bottom:36px;scroll-margin-top:16px;counter-increment:chap}
+h3.sec{font-size:22px;letter-spacing:2px;color:var(--ink);display:flex;align-items:center;gap:12px;margin-bottom:6px}
+h3.sec::before{content:counter(chap,cjk-ideographic);background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-size:13px;border-radius:8px;padding:4px 11px;letter-spacing:2px;font-weight:700;flex-shrink:0}
+h3.sec small{font-size:12.5px;color:var(--ink2);font-weight:400;margin-left:6px;letter-spacing:0}
+#c10 h3.sec::before{content:"附";counter-increment:none}
+.crumb{font-size:12px;color:var(--gold2);margin:4px 0 16px;letter-spacing:1px}
+h4{font-size:16.5px;margin:20px 0 10px;color:var(--ink)}
+h4 .idx{color:var(--gold2);font-size:12px;margin-right:6px;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 30px;margin-bottom:22px;box-shadow:0 2px 6px rgba(90,60,20,.05)}
+.card b,section b{color:var(--gold)}
 
-        .section {
-            background: #fffcf7; border: 1px solid #e2d7c8;
-            border-radius: 20px; padding: 1.5rem 1.8rem;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
-        }
-        .section h2 {
-            font-size: 1.3rem; font-weight: 600; color: #4d3e2b;
-            letter-spacing: 1px; border-bottom: 1px solid #dacfc0;
-            padding-bottom: 0.7rem; margin-bottom: 1rem;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .section h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
-        .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-        .lesson-list li {
-            display: flex; align-items: center; gap: 12px;
-            padding: 0.7rem 1rem; border-radius: 12px;
-            background: #f7f2ea; transition: 0.15s;
-        }
-        .lesson-list li a {
-            text-decoration: none; color: #3d3429; font-size: 1rem;
-            display: flex; align-items: center; gap: 10px; width: 100%;
-        }
-        .lesson-list li:hover { background: #ede6db; }
-        .lesson-list li .day-num {
-            background: #dacfc0; color: #3e3225; font-size: 0.75rem;
-            padding: 0.2rem 0.8rem; border-radius: 40px; font-weight: 500;
-            white-space: nowrap;
-        }
-        .lesson-list li .title { font-weight: 450; }
-        .lesson-list li .range { margin-left: auto; font-size: 0.8rem; color: #8a7a64; white-space: nowrap; }
-        .lesson-list li.disabled { opacity: 0.5; background: #f0ede8; pointer-events: none; }
-        .lesson-list li.disabled .day-num { background: #d4cec6; }
+/* ===== 表格 ===== */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px;background:#fff;border-radius:10px;overflow:hidden}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:#f4eedd;color:var(--gold);white-space:nowrap}
+tr:nth-child(even) td{background:var(--src-bg)}
 
-        .footer-note {
-            text-align: center; font-size: 0.9rem; color: #8c7a64;
-            border-top: 1px solid #ddd0c0; padding-top: 1.5rem;
-            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
-        }
-        @media (max-width: 600px) {
-            body { padding: 1.5rem 1rem; }
-            .intro-row { flex-direction: column; gap: 1rem; text-align: center; }
-            .intro-img { flex: auto; }
-            .intro-img img { width: 120px; }
-            .intro-text h1 { font-size: 1.8rem; letter-spacing: 4px; }
-            .section { padding: 1.2rem 1rem; }
-            .lesson-list li .range { display: none; }
-            .book-grid { grid-template-columns: repeat(4, 1fr); }
-            .jinju-grid { grid-template-columns: repeat(2, 1fr); }
-            .jinju-section { padding: 1.2rem 1rem; }
-        }
-        @media (max-width: 400px) {
-            .book-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-    </style>
+/* ===== 来源标注 ===== */
+.src{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-size:11.5px;border-radius:999px;padding:2px 11px;border:1px solid transparent}
+.chip.ok{background:#e9f2ec;color:var(--ok);border-color:#cfe0d4}
+.chip.local{background:#f4eedd;color:var(--gold);border-color:#e3d5ae}
+.chip.src-name{background:var(--src-bg);color:var(--ink2);border-color:var(--line)}
+.note{background:#f4eedd;border-left:4px solid var(--gold2);border-radius:0 10px 10px 0;padding:12px 18px;font-size:13.5px;color:#5c4d2e;margin:12px 0}
+.flag{font-size:11px;color:var(--ok)}
+
+/* ===== 图表 ===== */
+.chart-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0;overflow-x:auto}
+.chart-title{text-align:center;font-size:14px;color:var(--gold);font-weight:700;margin-bottom:4px}
+.chart-cap{text-align:center;font-size:11.5px;color:var(--ink2);letter-spacing:1px}
+/* 时间轴 */
+.tl{display:flex;gap:0;margin:16px 0;overflow-x:auto}
+.tl .day{flex:1;min-width:74px;border-top:2px solid var(--gold2);padding:6px 6px 0;font-size:12px;position:relative}
+.tl .day::before{content:"";position:absolute;top:-7px;left:0;width:11px;height:11px;border-radius:50%;background:var(--gold2);border:2px solid #fff;box-shadow:0 0 0 1px var(--gold2)}
+.tl .day b{display:block;color:var(--gold);font-size:13px}
+/* 收入条形 */
+.bars{margin:14px 0}
+.bar-row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
+.bar-row .lbl{width:150px;text-align:right;color:var(--ink);flex-shrink:0}
+.bar-row .track{flex:1;background:var(--src-bg);border-radius:5px;height:20px;position:relative;overflow:hidden}
+.bar-row .fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0;transition:width 1s ease}
+.bar-row .val{width:150px;font-size:12px;color:var(--ink2);flex-shrink:0}
+
+/* ===== 折叠面板（参考版手风琴样式） ===== */
+details.acc{background:#fff;border:1px solid var(--line);border-radius:11px;margin-bottom:10px;overflow:hidden}
+details.acc>summary{cursor:pointer;padding:12px 18px;font-weight:700;color:var(--ink);font-size:14.5px;list-style:none;display:flex;align-items:center;gap:8px;transition:background .15s}
+details.acc>summary:hover{background:#faf6ea}
+details.acc>summary::before{content:"▸";color:var(--gold2);transition:transform .25s}
+details.acc[open]>summary::before{transform:rotate(90deg)}
+details.acc>summary{list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc[open]>summary{color:var(--gold)}
+details.acc .inner{padding:2px 20px 16px;font-size:14px;color:#4c4230;border-top:1px dashed var(--line)}
+
+/* ===== 唱保剧本（深褐戏台） ===== */
+.drama{background:#332a1c;color:#f0e8da;border-radius:12px;padding:22px 26px;margin:14px 0}
+.drama .act{color:#e2c37a;font-size:14px;letter-spacing:2px;margin:16px 0 6px;border-bottom:1px solid #4c3f2a;padding-bottom:3px}
+.drama .act:first-of-type{margin-top:0}
+.drama .who{color:#e2c37a;font-weight:700}
+.drama .shout{color:#ffe9b8;font-weight:700;letter-spacing:1px}
+.drama .cue{color:#9a8d76;font-size:12.5px}
+
+/* ===== 字典 ===== */
+.dict dt{font-weight:700;color:var(--gold);margin-top:12px;font-size:14.5px}
+.dict dt::before{content:"【";color:var(--gold2)} .dict dt::after{content:"】";color:var(--gold2)}
+.dict dd{margin-left:0;font-size:13.5px;color:var(--ink);padding-left:14px;border-left:2px solid var(--line)}
+
+/* ===== 标签页 ===== */
+.tabbar{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}
+.tabbar button{font-family:inherit;font-size:13px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 18px;cursor:pointer;transition:all .2s}
+.tabbar button:hover:not(.on){border-color:var(--gold2);color:var(--gold)}
+.tabbar button.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
+.pane{display:none}.pane.on{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}.bar-row .lbl{width:110px}.bar-row .val{width:110px}}
+@media(max-width:900px){.layout{flex-direction:column}aside{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:20px 14px}}
+mark{background:#ecd9a4;padding:0 1px;border-radius:2px}
+footer{color:var(--ink2);font-size:12.5px;text-align:center;letter-spacing:1px;border-top:1px solid var(--line);margin-top:44px;padding-top:18px}
+
+/* ===== 双模式：置顶索引条（参考版顶栏样式） ===== */
+body.mode-top aside{display:none}
+body.mode-top .topbar{display:flex}
+body.mode-side .topbar{display:none}
+.topbar{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:11px 22px;background:rgba(247,243,234,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .t-brand{display:flex;align-items:center;gap:9px;font-family:var(--serif-display);font-weight:800;font-size:18px;letter-spacing:4px;color:var(--gold);margin-right:10px}
+.seal{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:16px;font-weight:800;color:#fff;font-family:var(--serif-display);background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.topbar a{font-size:13px;color:var(--ink);text-decoration:none;padding:5px 15px;border-radius:999px;border:1px solid var(--line);background:#fff;white-space:nowrap;transition:all .2s}
+.topbar a:hover{border-color:var(--gold2);color:var(--gold)}
+.topbar a.active{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
+.mode-fab{position:fixed;bottom:24px;right:24px;z-index:70;display:flex;flex-direction:column;gap:7px}
+.mode-fab button{font-family:inherit;font-size:13px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(90,60,20,.1)}
+.mode-fab button:hover{border-color:var(--gold2);color:var(--gold)}
+.mode-fab button.on{background:var(--gold);color:#fff;border-color:var(--gold);font-weight:700}
+
+/* ===== 阅读进度条 ===== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:100;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+
+/* ===== 手机端适配 ===== */
+@media(max-width:700px){
+  /* 全局：杜绝横向溢出导致的整页左右挪 */
+  html,body{overflow-x:hidden;max-width:100vw}
+  /* 手机上两种模式统一：隐藏侧栏，置顶索引 fixed 真钉死，任何滚动下都消失不了 */
+  aside{display:none!important}
+  body.mode-side .topbar,body.mode-top .topbar{display:flex!important}
+  .topbar{position:fixed;top:0;left:0;right:0;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:8px 12px;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#f7f3ea;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .topbar::-webkit-scrollbar{display:none}
+  .topbar .t-brand{position:sticky;left:0;flex-shrink:0;z-index:1;background:#f7f3ea;padding-right:12px;margin-right:2px;box-shadow:6px 0 8px -4px rgba(90,60,20,.12)}
+  .topbar a{font-size:12px;padding:4px 11px;flex-shrink:0}
+  /* fixed 后给正文让位 */
+  body{padding-top:50px}
+  /* 模式切换钮在手机上无意义（两种模式合一），隐藏 */
+  .mode-fab{display:none}
+  /* 卷首状元帽+文字纵向堆叠 */
+  header.hero{padding:26px 20px}
+  header.hero img{width:104px!important;height:104px!important}
+  header.hero h2{font-size:24px!important;letter-spacing:4px!important}
+  /* 生肖轮盘单列 */
+  #zodiacGrid{grid-template-columns:1fr!important}
+  /* 宽表格横向滑动不撑破卡片 */
+  .card{overflow-x:auto}
+  /* 布局容器不再限宽，正文贴满屏幕 */
+  .layout{max-width:100vw;min-height:0}
+  main{padding:18px 14px 70px}
+}
+</style>
 </head>
-<body>
-<div class="app">
+<body class="mode-side">
+<div id="progress"></div>
+<nav class="topbar">
+  <span class="t-brand"><span class="seal">登</span>登科录</span>
+  <a href="#c1">一 · 总览</a><a href="#c2">二 · 六级闯关</a><a href="#c3">三 · 考试内容</a><a href="#c4">四 · 考场防弊</a><a href="#c5">五 · 功名待遇</a><a href="#c6">六 · 榜单仪式</a><a href="#c7">七 · 荣誉之巅</a><a href="#c8">八 · 趣味</a><a href="#c9">九 · 辞典</a><a href="#c10">附录 · 来源</a>
+</nav>
+<div class="mode-fab">
+  <button data-mode-btn="side" class="on">▤ 侧栏模式</button>
+  <button data-mode-btn="top">≡ 置顶索引</button>
+</div>
+<div class="layout">
+<aside>
+  <div class="brand">登 科 录</div>
+  <div class="brand-sub">古代科举 · 一次看透 · 2026-09-19</div>
+  <div class="search-box"><input id="q" type="text" placeholder="🔍 全文搜索：如 廪生、桂榜、八股…"><div id="qCount" style="font-size:12px;color:#8a7a55;min-height:16px;margin:-8px 0 10px"></div></div>
+  <ul class="tree" id="tree">
+    <li class="node l1"><span><span class="caret">▼</span><a href="#c1">一 · 千年科举总览</a><span class="badge">2</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c1-1">制度沿革时间带</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c1-2">考试体系全景图</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c2">二 · 六级闯关之路</a><span class="badge">6</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c2-1">2.1 童试三关（入门）</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c2-2">2.2 乡试 · 秋闱</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c2-3">2.3 会试 · 春闱</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c2-4">2.4 殿试 · 金榜</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c2-5">2.5 三年一卡点（干支周期）</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c2-6">2.6 考场九天七夜实录</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c3">三 · 考什么：文体与内容</a><span class="badge">3</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c3-1">3.1 三场文体演变</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c3-2">3.2 八股文解剖</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c3-3">3.3 殿试策问</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c4">四 · 防弊体系：保结制度</a><span class="badge">5</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c4-1">4.1 为什么需要保人</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c4-2">4.2 保人资格：廪生</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c4-3">4.3 做保的待遇与风险</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c4-4">4.4 做保流程与唱保</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c4-5">4.5 唐伯虎唱保模拟</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c5">五 · 功名与待遇</a><span class="badge">4</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c5-1">5.1 生员三等与特权</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c5-2">5.2 举人：身份跃迁</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c5-3">5.3 进士：仕途金字塔</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c5-4">5.4 经济账 · 米价折算</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c6">六 · 榜单与仪式</a><span class="badge">2</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c6-1">6.1 三大放榜：桂·杏·金</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c6-2">6.2 宴礼与题名碑</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c7">七 · 荣誉之巅</a><span class="badge">3</span></span>
+      <ul>
+        <li class="node"><span><span class="twig">├</span><a href="#c7-1">7.1 三元及第（14 人）</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c7-2">7.2 六元及第（2 人）</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c7-3">7.3 状元地理：苏州现象</a></span></li>
+      </ul>
+    </li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c8">八 · 趣味冷知识</a></span></li>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c9">九 · 名词速查辞典</a></span></li>
+    <li class="node l1"><span><a href="#c10">附录 · 资料来源与可信度</a></span></li>
+  </ul>
+  <div class="legend">
+    <b>来源标注图例</b><br>
+    <span class="dot" style="background:#3c6e47"></span>已联网核实（权威机构）<br>
+    <span class="dot" style="background:#a5721f"></span>出自 DeepSeek 历史对话档案<br>
+    <span class="dot" style="background:#999"></span>观点性内容 / 文学演绎
+  </div>
+</aside>
+<main>
+<header class="hero" style="display:flex;align-items:center;gap:30px;flex-wrap:wrap">
+  <img src="状元帽候选/状元帽_金环徽章.png" alt="状元帽" width="150" height="150" style="flex:0 0 auto;border-radius:50%;box-shadow:0 8px 22px rgba(0,0,0,.5)">
+  <div style="flex:1 1 280px;min-width:0">
+  <h2>登科录 · 古代科举一次看透</h2>
+  <p>以本地 DeepSeek 档案（687 个对话、140 个科举相关）为底稿，联合权威网络资料交叉核实重构。按「总览 → 闯关 → 文体 → 防弊 → 待遇 → 仪式 → 荣誉」七层递进展开，分支间以 <b style="color:var(--gold)">↗ 交叉引用</b> 标注关联。</p>
+  </div>
+</header>
 
-    <div class="header">
-        <div class="intro-row">
-            <div class="intro-img">
-                <img src="kongzi.jpg" alt="孔子画像">
-                <div class="img-caption">孔子（前551—前479）</div>
-            </div>
-            <div class="intro-text">
-                <h1>📖 论语 · 每日学习</h1>
-                <p>《论语》是记录孔子及其弟子言行的语录体经典，由孔子弟子及再传弟子编纂而成，共二十篇，约一万六千字。全书以“仁”为核心，涵盖为学、修身、为政、处世之道，是儒家思想的奠基之作，也是了解中国文化精神的必读经典。</p>
-            </div>
-        </div>
-        <div class="sub" id="stats">
-            <span>📘 已学 12 天</span>
-            <span id="daysCount">📅 已学 0 天</span>
-            <span id="wordsCount">✍️ 约 0 字</span>
-        </div>
-        <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%;"></div></div>
-    </div>
+<!-- ================= 一、总览 ================= -->
+<section id="c1">
+<h3 class="sec">一 · 千年科举总览<small>先见森林，再看树木</small></h3>
+<div class="crumb">一 · 千年科举总览 ／ 1.1 制度沿革 ／ 1.2 体系全景</div>
 
-    <div class="jinju-section">
-        <h2>📋 论语金句 <small>精选 20 条</small></h2>
-        <div class="intro-text">
-            我们日常挂在嘴边的许多成语，其实都出自《论语》。只是用得久了，便忘了它的来处。这里把出自《论语》的金句与成语汇于一处，既是一份速查，也是一次寻根。
-        </div>
-        <div class="jinju-grid">
-            <a href="lunyu-jinju.html#bylh">不亦乐乎 <span class="ref">1.1</span></a>
-            <a href="lunyu-jinju.html#qyls">巧言令色 <span class="ref">1.3</span></a>
-            <a href="lunyu-jinju.html#sxws">三省吾身 <span class="ref">1.4</span></a>
-            <a href="lunyu-jinju.html#yeyx">言而有信 <span class="ref">1.7</span></a>
-            <a href="lunyu-jinju.html#szzy">慎终追远 <span class="ref">1.9</span></a>
-            <a href="lunyu-jinju.html#wlgjr">温良恭俭让 <span class="ref">1.10</span></a>
-            <a href="lunyu-jinju.html#hwg">和为贵 <span class="ref">1.12</span></a>
-            <a href="lunyu-jinju.html#rqrc">如切如磋 <span class="ref">1.15</span></a>
-            <a href="lunyu-jinju.html#ssel">三十而立 <span class="ref">2.4</span></a>
-            <a href="lunyu-jinju.html#ssbh">四十不惑 <span class="ref">2.4</span></a>
-            <a href="lunyu-jinju.html#ztm">知天命 <span class="ref">2.4</span></a>
-            <a href="lunyu-jinju.html#wgzx">温故知新 <span class="ref">2.11</span></a>
-            <a href="lunyu-jinju.html#jzbq">君子不器 <span class="ref">2.12</span></a>
-            <a href="lunyu-jinju.html#xebs">学而不思则罔 <span class="ref">2.15</span></a>
-            <a href="lunyu-jinju.html#zzwz">知之为知之 <span class="ref">2.17</span></a>
-            <a href="lunyu-jinju.html#ewbx">人而无信 <span class="ref">2.22</span></a>
-            <a href="lunyu-jinju.html#skrs">是可忍孰不可忍 <span class="ref">3.1</span></a>
-            <a href="lunyu-jinju.html#qxqx">巧笑倩兮 <span class="ref">3.8</span></a>
-            <a href="lunyu-jinju.html#jwbb">既往不咎 <span class="ref">3.21</span></a>
-            <a href="lunyu-jinju.html#jmjs">尽美尽善 <span class="ref">3.25</span></a>
-        </div>
-        <div class="jinju-more">
-            <a href="lunyu-jinju.html">✨ 更多金句请点这里 →</a>
-        </div>
-    </div>
-
-    <div class="book-nav">
-        <h2>📚 全书篇目 <small>点击跳转</small></h2>
-        <div class="book-grid">
-            <a href="#xueer" class="done"><span class="num">第一篇</span><span class="name">学而</span></a>
-            <a href="#weizheng" class="done"><span class="num">第二篇</span><span class="name">为政</span></a>
-            <a href="#bayi" class="done"><span class="num">第三篇</span><span class="name">八佾</span></a>
-            <a href="#liren" class="done"><span class="num">第四篇</span><span class="name">里仁</span></a>
-            <a href="#gongye" class="current"><span class="num">第五篇</span><span class="name">公冶长</span></a>
-            <a href="#yongye" class="disabled"><span class="num">第六篇</span><span class="name">雍也</span></a>
-            <a href="#shuer" class="disabled"><span class="num">第七篇</span><span class="name">述而</span></a>
-            <a href="#taibo" class="disabled"><span class="num">第八篇</span><span class="name">泰伯</span></a>
-            <a href="#zihan" class="disabled"><span class="num">第九篇</span><span class="name">子罕</span></a>
-            <a href="#xiangdang" class="disabled"><span class="num">第十篇</span><span class="name">乡党</span></a>
-            <a href="#xianjin" class="disabled"><span class="num">第十一篇</span><span class="name">先进</span></a>
-            <a href="#yanyuan" class="disabled"><span class="num">第十二篇</span><span class="name">颜渊</span></a>
-            <a href="#zilu" class="disabled"><span class="num">第十三篇</span><span class="name">子路</span></a>
-            <a href="#xianwen" class="disabled"><span class="num">第十四篇</span><span class="name">宪问</span></a>
-            <a href="#weilinggong" class="disabled"><span class="num">第十五篇</span><span class="name">卫灵公</span></a>
-            <a href="#jishi" class="disabled"><span class="num">第十六篇</span><span class="name">季氏</span></a>
-            <a href="#yanghuo" class="disabled"><span class="num">第十七篇</span><span class="name">阳货</span></a>
-            <a href="#weizi" class="disabled"><span class="num">第十八篇</span><span class="name">微子</span></a>
-            <a href="#zizhang" class="disabled"><span class="num">第十九篇</span><span class="name">子张</span></a>
-            <a href="#yaoyue" class="disabled"><span class="num">第二十篇</span><span class="name">尧曰</span></a>
-        </div>
-    </div>
-
-    <div class="section" id="xueer">
-        <h2>📗 学而篇第一 <small>共 16 章 · 已完结</small></h2>
-        <ul class="lesson-list">
-            <li>
-                <a href="day1.html" data-words="207">
-                    <span class="day-num">第一天</span>
-                    <span class="title">学而篇 1.1 ~ 1.9</span>
-                    <span class="range">约 207 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day2.html" data-words="276">
-                    <span class="day-num">第二天</span>
-                    <span class="title">学而篇 1.10 ~ 1.16</span>
-                    <span class="range">约 276 字</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="section" id="weizheng">
-        <h2>📘 为政篇第二 <small>共 24 章 · 已完结</small></h2>
-        <ul class="lesson-list">
-            <li>
-                <a href="day3.html" data-words="230">
-                    <span class="day-num">第三天</span>
-                    <span class="title">为政篇 2.1 ~ 2.8</span>
-                    <span class="range">约 230 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day4.html" data-words="250">
-                    <span class="day-num">第四天</span>
-                    <span class="title">为政篇 2.9 ~ 2.16</span>
-                    <span class="range">约 250 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day5.html" data-words="240">
-                    <span class="day-num">第五天</span>
-                    <span class="title">为政篇 2.17 ~ 2.24</span>
-                    <span class="range">约 240 字</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="section" id="bayi">
-        <h2>📙 八佾篇第三 <small>共 26 章 · 已完结</small></h2>
-        <ul class="lesson-list">
-            <li>
-                <a href="day6.html" data-words="240">
-                    <span class="day-num">第六天</span>
-                    <span class="title">八佾篇 3.1 ~ 3.8</span>
-                    <span class="range">约 240 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day7.html" data-words="250">
-                    <span class="day-num">第七天</span>
-                    <span class="title">八佾篇 3.9 ~ 3.16</span>
-                    <span class="range">约 250 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day8.html" data-words="300">
-                    <span class="day-num">第八天</span>
-                    <span class="title">八佾篇 3.17 ~ 3.26</span>
-                    <span class="range">约 300 字</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="section" id="liren">
-        <h2>📕 里仁篇第四 <small>共 26 章 · 已完结</small></h2>
-        <ul class="lesson-list">
-            <li>
-                <a href="day9.html" data-words="230">
-                    <span class="day-num">第九天</span>
-                    <span class="title">里仁篇 4.1 ~ 4.8</span>
-                    <span class="range">约 230 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day10.html" data-words="250">
-                    <span class="day-num">第十天</span>
-                    <span class="title">里仁篇 4.9 ~ 4.16</span>
-                    <span class="range">约 250 字</span>
-                </a>
-            </li>
-            <li>
-                <a href="day11.html" data-words="260">
-                    <span class="day-num">第十一天</span>
-                    <span class="title">里仁篇 4.17 ~ 4.26</span>
-                    <span class="range">约 260 字</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="section" id="gongye">
-        <h2>📒 公冶长篇第五 <small>共 28 章 · 连载中</small></h2>
-        <ul class="lesson-list">
-            <li>
-                <a href="day12.html" data-words="250">
-                    <span class="day-num">第十二天</span>
-                    <span class="title">公冶长篇 5.1 ~ 5.8</span>
-                    <span class="range">约 250 字</span>
-                </a>
-            </li>
-            <li class="disabled">
-                <span class="day-num">第十三天</span>
-                <span class="title">公冶长篇 5.9 ~ 5.16</span>
-                <span class="range">待更新</span>
-            </li>
-        </ul>
-    </div>
-
-    <div class="footer-note">
-        <span>📚 每天 200 字 · 三个月通读</span>
-        <span>🔖 一年四遍 · 熟读精思</span>
-    </div>
+<div class="card" id="c1-1">
+<h4><span class="idx">1.1</span>制度沿革：605 — 1905，整整 1300 年</h4>
+<div class="chart-wrap">
+<svg viewBox="0 0 680 150" width="100%">
+  <line x1="30" y1="80" x2="650" y2="80" stroke="#a5721f" stroke-width="4"/>
+  <g font-size="11" fill="#7a7166">
+    <circle cx="60" cy="80" r="7" fill="#a5721f"/><text x="40" y="60" fill="#a5721f" font-weight="bold">隋 605</text><text x="30" y="105">分科取士始</text>
+    <circle cx="165" cy="80" r="7" fill="#a5721f"/><text x="140" y="60" fill="#a5721f">唐</text><text x="130" y="105">诗赋取士</text>
+    <circle cx="270" cy="80" r="7" fill="#a5721f"/><text x="245" y="60" fill="#a5721f">宋</text><text x="232" y="105">糊名誊录</text>
+    <circle cx="375" cy="80" r="7" fill="#a5721f"/><text x="350" y="60" fill="#a5721f">元</text><text x="340" y="105">中衰</text>
+    <circle cx="480" cy="80" r="7" fill="#a5721f"/><text x="455" y="60" fill="#a5721f">明清</text><text x="440" y="105">八股·六级完备</text>
+    <circle cx="620" cy="80" r="7" fill="#a5721f"/><text x="592" y="60" fill="#a5721f" font-weight="bold">1905</text><text x="578" y="105">末科状元刘春霖</text>
+  </g>
+</svg>
+<div class="chart-cap">科举 1300 年：萌芽于汉 → 创始于隋 → 完备于唐 → 沿用于宋 → 中衰于元 → 复盛于明清</div>
+</div>
+<p>587 年隋文帝废九品中正制，605 年隋朝开始分科考试选官；至清光绪三十一年（1905）废止。因坚持"自由报名、公开考试、平等竞争、择优取士"，为寒门子弟提供了上升通道。明清两代是本知识体系的叙述坐标。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">人民网《中国历史上的"高考"》</span><span class="chip src-name">华商网·陕西文物探探探</span></div>
 </div>
 
+<div class="card" id="c1-2">
+<h4><span class="idx">1.2</span>体系全景：一张图看懂六级与五重身份</h4>
+<p>读书人的身份序列是本体系的"主轴"：<b>白丁 → 童生 → 秀才（生员）→ 举人 → 贡士 → 进士</b>。每次跨越都对应一场考试、一个头名称谓、一组新特权——这正是第二章到第五章的展开顺序。</p>
+<div class="chart-wrap">
+<svg viewBox="0 0 680 300" width="100%">
+  <g font-family="inherit">
+    <!-- 台阶 -->
+    <g>
+      <rect x="8"   y="240" width="96" height="40"  fill="#e8dcc8" stroke="#c9b88f"/><text x="56"  y="265" text-anchor="middle" font-size="14" fill="#5a4a30" font-weight="bold">白丁</text>
+      <rect x="104" y="215" width="96" height="65"  fill="#e0d0b0" stroke="#c9b88f"/><text x="152" y="242" text-anchor="middle" font-size="14" fill="#5a4a30" font-weight="bold">童生</text><text x="152" y="260" text-anchor="middle" font-size="10" fill="#8a7a55">过县试</text>
+      <rect x="200" y="190" width="96" height="90"  fill="#d7c296" stroke="#c9b88f"/><text x="248" y="228" text-anchor="middle" font-size="14" fill="#5a4a30" font-weight="bold">童生</text><text x="248" y="246" text-anchor="middle" font-size="10" fill="#8a7a55">过府试</text>
+      <rect x="296" y="160" width="96" height="120" fill="#d0b584" stroke="#b0965a"/><text x="344" y="212" text-anchor="middle" font-size="14" fill="#4a3a20" font-weight="bold">秀才</text><text x="344" y="230" text-anchor="middle" font-size="10" fill="#7a6844">过院试·廪增附三等</text>
+      <rect x="392" y="130" width="96" height="150" fill="#c8a86e" stroke="#b0965a"/><text x="440" y="198" text-anchor="middle" font-size="15" fill="#3a2a10" font-weight="bold">举人</text><text x="440" y="216" text-anchor="middle" font-size="10" fill="#6a5630">过乡试·有做官资格</text>
+      <rect x="488" y="85"  width="96" height="195" fill="#a5721f" stroke="#8c5f1e"/><text x="536" y="172" text-anchor="middle" font-size="15" fill="#fff" font-weight="bold">贡士</text><text x="536" y="190" text-anchor="middle" font-size="10" fill="#f5ead3">过会试（礼部）</text>
+      <rect x="584" y="35"  width="96" height="245" fill="#a5721f" stroke="#6e2318"/><text x="632" y="150" text-anchor="middle" font-size="16" fill="#fff" font-weight="bold">进士</text><text x="632" y="170" text-anchor="middle" font-size="10" fill="#f3d9d5">过殿试（皇帝）</text>
+    </g>
+    <!-- 头名标签 -->
+    <g font-size="10.5">
+      <path d="M152 215 l0 -24" stroke="#a5721f" fill="none"/><text x="152" y="184" text-anchor="middle" fill="#a5721f">第一名·县案首</text>
+      <path d="M248 190 l0 -24" stroke="#a5721f" fill="none"/><text x="248" y="159" text-anchor="middle" fill="#a5721f">第一名·府案首</text>
+      <path d="M344 160 l0 -24" stroke="#a5721f" fill="none"/><text x="344" y="129" text-anchor="middle" fill="#a5721f">第一名·院案首</text>
+      <path d="M440 130 l0 -24" stroke="#a5721f" fill="none"/><text x="440" y="99" text-anchor="middle" fill="#a5721f" font-weight="bold">第一名·解元</text>
+      <path d="M536 85 l0 -24" stroke="#a5721f" fill="none"/><text x="536" y="54" text-anchor="middle" fill="#a5721f" font-weight="bold">第一名·会元</text>
+      <text x="632" y="62"  text-anchor="middle" fill="#fff" font-weight="bold">第一名·状元</text>
+      <text x="632" y="80"  text-anchor="middle" fill="#fff">第二名·榜眼</text>
+      <text x="632" y="98"  text-anchor="middle" fill="#fff">第三名·探花</text>
+    </g>
+    <!-- 考试名 -->
+    <g font-size="10" fill="#7a7166">
+      <text x="56"  y="297" text-anchor="middle">—</text>
+      <text x="152" y="292" text-anchor="middle">县试（二月）</text>
+      <text x="248" y="292" text-anchor="middle">府试（四月）</text>
+      <text x="344" y="292" text-anchor="middle">院试</text>
+      <text x="440" y="292" text-anchor="middle">乡试(秋闱)</text>
+      <text x="536" y="292" text-anchor="middle">会试(春闱)</text>
+      <text x="632" y="292" text-anchor="middle">殿试</text>
+    </g>
+  </g>
+</svg>
+<div class="chart-cap">六级考试 × 五重身份跃迁：越往右台阶越高，头名称谓悬于其上</div>
+</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">故宫博物院·宫廷典制</span><span class="chip src-name">人民网</span><span class="chip local">◆ 本地档案《六级升级之漫漫长路》</span></div>
+</div>
+</section>
+
+<!-- ================= 二、六级闯关 ================= -->
+<section id="c2">
+<h3 class="sec">二 · 六级闯关之路<small>主轴：每过一关，换一个身份</small></h3>
+<div class="crumb">二 · 六级闯关 ／ 童试 → 乡试 → 会试 → 殿试 ／ 关联：↗ 4.防弊（入场要保人）· ↗ 5.待遇（身份变化）· ↗ 6.榜单（放榜仪式）</div>
+
+<div id="c2-1">
+<h4><span class="idx">2.1</span>童试三关：入门之路（县试 → 府试 → 院试）</h4>
+<div class="card">
+<p>童试是<b>资格赛</b>而非"正式科举"——通过后才取得生员（秀才）身份，方有参加正式三级考试（乡会殿）的入场券。应试者不论年龄皆称<b>童生</b>，故有"白首童生"之说。</p>
+<table>
+  <tr><th></th><th>县试</th><th>府试</th><th>院试</th></tr>
+  <tr><td><b>主考</b></td><td>本县知县</td><td>知府（直隶州知州）</td><td>各省提督学政（中央钦派）</td></tr>
+  <tr><td><b>时间</b></td><td>农历二月（也有正月）</td><td>四月</td><td>三年两次（岁考·科考）</td></tr>
+  <tr><td><b>场数</b></td><td>通常四至五场，首场为正场</td><td>一至二场</td><td>两场：正试＋复试</td></tr>
+  <tr><td><b>头名</b></td><td>县案首</td><td>府案首</td><td>院案首</td></tr>
+  <tr><td><b>通关奖励</b></td><td>取得府试资格</td><td>取得院试资格</td><td><b>生员（秀才）身份</b>，入府州县学</td></tr>
+</table>
+<div class="note">🍬 三场皆第一，称"<b>小三元</b>"——与后文的"大三元"（解元·会元·状元）相映成趣。</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">华商网·蒲城清代考院专题</span><span class="chip local">◆ 本地档案（县案首保送院试之说属孤证，已按"需复核"处理）</span></div>
+</div>
+</div>
+
+<div id="c2-2">
+<h4><span class="idx">2.2</span>乡试 · 秋闱：命运的分水岭</h4>
+<div class="card">
+<p><b>逢子、卯、午、酉年</b>的八月，在各省省城贡院举行，故称"秋闱""秋试"，又称"大比"。主考由皇帝钦派翰林、内阁学士充任。遇朝廷庆典可加开<b>恩科</b>。考中者称<b>举人</b>（俗称孝廉），从平民跃升为"老爷"——这是整个科举中含金量最高的一次身份跨越（待遇详见 <a href="#c5-2">↗ 5.2 举人</a>）。</p>
+<table>
+  <tr><th>场次</th><th>日期</th><th>考试内容（清乾隆五十二年定制）</th></tr>
+  <tr><td><b>第一场</b></td><td>八月初九</td><td>四书文三篇（《论语》《中庸》《孟子》各一，每篇 700 字以上）＋ 五言八韵试帖诗一首</td></tr>
+  <tr><td><b>第二场</b></td><td>八月十二</td><td>五经文五篇（《易》《书》《诗》《春秋》《礼记》各一）</td></tr>
+  <tr><td><b>第三场</b></td><td>八月十五</td><td>经史时务策五道（结合经学议论时政）</td></tr>
+</table>
+<p>每场<b>提前一日进场、考毕次日出场</b>，合计九天七夜，吃喝拉撒睡全在号舍（详见 <a href="#c2-6">↗ 2.6</a>）。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">故宫博物院《乡试》</span><span class="chip src-name">中国第一历史档案馆《三场体格》</span><span class="chip src-name">人民网</span></div>
+</div>
+<div class="card">
+<h4 style="margin-top:0">乡试榜上的名次称谓</h4>
+<table>
+  <tr><th>名次</th><th>称谓</th></tr>
+  <tr><td>第一名</td><td><b>解元</b>（唐伯虎乡试第一，故称"唐解元"）</td></tr>
+  <tr><td>第二名</td><td>亚元</td></tr>
+  <tr><td>第三、四、五名</td><td>经魁（填榜时最后倒写前五名，称"五经魁"，唱名特响，曰"闹五魁"）</td></tr>
+  <tr><td>第六名</td><td>亚魁</td></tr>
+  <tr><td>其余</td><td>文魁；另每正榜五名取副榜一名（副贡）</td></tr>
+</table>
+<p>新科举人由国家颁给 <b>20 两牌坊银</b>和顶戴衣帽匾额，匾额悬于宅门，门前可立牌坊——"光宗耀祖"的实物化。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">360百科·中国古代科举考试制度（引清代科场则例）</span><span class="chip local">◆ 本地档案互证</span></div>
+</div>
+</div>
+
+<div id="c2-3">
+<h4><span class="idx">2.3</span>会试 · 春闱：决定性一考</h4>
+<div class="card">
+<p><b>乡试次年</b>（丑、辰、未、戌年）春季，由<b>礼部</b>在京城贡院主持，故又称"礼闱""春闱"。各省举人及国子监监生皆可应考，同样连考三场、每场三天。主考官称<b>总裁</b>（座主/座师），同考官人数比乡试多一倍。</p>
+<p>录取者称<b>贡士</b>（俗称出贡，别称明经），第一名称<b>会元</b>。录取约三百名，名额按南北分卷制度分配——明代仁宗朝定"南六十、北四十"，此后沿用至科举废止。</p>
+<div class="note">⚠️ <b>南北榜之争</b>：洪武三十年（1397）春榜所取 52 人全为南方人，北方举人大哗，朱元璋亲自复查后处死主考，夏榜全取北方人——这是分卷制度的起点，也解释了为何冒籍是重罪（↗ <a href="#c4-4">4.4</a>）。</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">鹤壁日报·科举三级考试</span><span class="chip src-name">Wikiwand·中国科举制度</span></div>
+</div>
+</div>
+
+<div id="c2-4">
+<h4><span class="idx">2.4</span>殿试 · 金榜：天子门生</h4>
+<div class="card">
+<p>会试当年（明成化八年起定于三月十五，清代多在四月）举行，<b>皇帝亲自主持</b>，只考<b>时务策一道</b>、为期一天。<b>不淘汰，只排名次</b>——能走进殿试的贡士，通常都已是进士。</p>
+<table>
+  <tr><th>甲第</th><th>名额</th><th>赐号</th><th>称谓</th></tr>
+  <tr><td><b>一甲</b></td><td>仅 3 名</td><td>进士及第</td><td>状元（鼎元）、榜眼、探花，合称"<b>三鼎甲</b>"</td></tr>
+  <tr><td><b>二甲</b></td><td>若干</td><td>进士出身</td><td>其中第一名称<b>传胪</b></td></tr>
+  <tr><td><b>三甲</b></td><td>若干</td><td>同进士出身</td><td>其中第一名称亦称<b>传胪</b></td></tr>
+</table>
+<p>榜用黄纸书写，故称"<b>黄甲</b>""<b>金榜</b>"——"金榜题名"由此而来。次日读卷，又次日放榜。</p>
+<h4>进士的出路</h4>
+<p>状元授<b>翰林院修撰</b>，榜眼、探花授<b>编修</b>；其余进士经<b>朝考</b>，优者入翰林院为<b>庶吉士</b>（三年散馆考试合格授编修、检讨），形成"非进士不入翰林，非翰林不入内阁"的格局；其余可任六部主事、御史，愿当知县者<b>榜下即用</b>，不必候补，号称"<b>老虎班</b>"。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">北京东城区图书馆·科举制度</span><span class="chip src-name">贡举考试（百度百科引制度史料）</span><span class="chip local">◆ 本地档案《翰林院制度解析》呼应</span></div>
+</div>
+</div>
+
+<div id="c2-5">
+<h4><span class="idx">2.5</span>三年一卡点：干支周期的巧妙衔接</h4>
+<div class="card">
+<p>科举"三年一大比"最精妙处在于：<b>秋闱中举，刚好赶上次年春天的春闱</b>。全部卡在地支循环上——</p>
+<div class="chart-wrap">
+<svg viewBox="0 0 680 120" width="100%">
+  <g font-size="12">
+    <rect x="20" y="30" width="130" height="44" rx="8" fill="#c8a86e"/><text x="85" y="50" text-anchor="middle" fill="#fff" font-weight="bold">乡试 · 秋闱</text><text x="85" y="66" text-anchor="middle" font-size="10.5" fill="#4a3a10">子 卯 午 酉 年 · 八月</text>
+    <path d="M155 52 L215 52" stroke="#a5721f" stroke-width="3" marker-end="url(#ar)"/>
+    <rect x="220" y="30" width="130" height="44" rx="8" fill="#a5721f"/><text x="285" y="50" text-anchor="middle" fill="#fff" font-weight="bold">会试 · 春闱</text><text x="285" y="66" text-anchor="middle" font-size="10.5" fill="#fff">丑 辰 未 戌 年 · 二/三月</text>
+    <path d="M355 52 L415 52" stroke="#a5721f" stroke-width="3" marker-end="url(#ar)"/>
+    <rect x="420" y="30" width="130" height="44" rx="8" fill="#a5721f"/><text x="485" y="50" text-anchor="middle" fill="#fff" font-weight="bold">殿试</text><text x="485" y="66" text-anchor="middle" font-size="10.5" fill="#fff">同年四月（原三月十五）</text>
+    <path d="M555 52 L590 52" stroke="#a5721f" stroke-width="3" marker-end="url(#ar)"/>
+    <rect x="595" y="30" width="70" height="44" rx="8" fill="#5a4632"/><text x="630" y="57" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">进士</text>
+    <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#a5721f"/></marker></defs>
+    <text x="185" y="20" text-anchor="middle" font-size="10" fill="#a5721f">中举→举人</text>
+    <text x="385" y="20" text-anchor="middle" font-size="10" fill="#a5721f">中贡士</text>
+    <text x="575" y="20" text-anchor="middle" font-size="10" fill="#a5721f">金榜题名</text>
+  </g>
+</svg>
+<div class="chart-cap">实例：光绪二年（1876 丙子）乡试 → 光绪三年（1877 丁丑）会试 → 同年四月殿试</div>
+</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">故宫博物院（年份/月份表述）</span><span class="chip local">◆ 本地档案《秋闱春闱推算》逻辑一致</span></div>
+</div>
+
+<div class="card">
+<div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+<div style="font-family:var(--font-serif,'STZhongsong','SimSun',serif);font-size:18px;font-weight:500;letter-spacing:2px;color:var(--accent,#a5721f)">科举大年 × 十二生肖轮盘</div>
+<div style="font-size:13px;color:#888780">秋闱枫叶黄 → 春闱浅绿 → 歇年灰</div>
+</div>
+<div id="zodiacGrid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:10px;align-items:stretch"></div>
+<div id="zodiacMore" style="display:none;margin-top:10px;text-align:center">
+<button id="zodiacToggle" style="font-family:inherit;font-size:14.5px;letter-spacing:1px;padding:10px 28px;border-radius:20px;border:1px solid #C99B45;background:linear-gradient(180deg,#FDF6E7,#F5E9CB);color:#8A6A14;cursor:pointer;box-shadow:1px 2px 4px rgba(140,110,50,.15)">点开看全部 12 年 ↓</button>
+<div id="zodiacHint" style="display:none;margin-top:8px;font-size:13px;color:#888780">看，后九年和头三年一模一样——子丑寅之后又是子丑寅，<b>三年一循环</b>，转完一轮正好十二年</div>
+</div>
+<div style="margin-top:12px;border-top:1px solid var(--line,#e3d8c2);padding-top:10px;font-size:13.5px;color:#5F5E5A;line-height:1.7">
+<p style="margin:0 0 6px"><b>岁试 / 科试之辨</b>：院试三年两次。岁试逢丑辰未戌年，取"岁"字——学政对在学生员的例行考课，兼收童生进学；科试逢寅巳申亥年，取"科"字——为科举选送人才，生员考列一、二等即"录科"、取得赴闱资格，故安排在乡试前一年。</p>
+<p style="margin:0 0 6px"><b>县试（二月）· 府试（四月）</b>：连年不断，岁岁开考，不占大年格。</p>
+<p style="margin:0 0 6px"><b>恩科</b>：逢登极、万寿、大婚等庆典额外加开，不循三年干支之期。</p>
+<p style="margin:0 0 6px"><b>考试时间链条</b>：县试（二月）→ 府试（四月）→ 院试（多在五六月间，由学政巡回各府主持、悬牌定日，各地不一，必在府试之后）→ 乡试（次年<b>八月初八</b>入场）→ 会试（又次年<b>三月</b>初九、十二、十五）→ 殿试（同年<b>四月廿一</b>）。时间环环相扣，进学之后绝不会"来不及"赶下一场。</p>
+<p style="margin:0 0 6px"><b>改期与例外</b>：会试明初定二月，乾隆九年（1744）以二月苦寒、防怀挟之弊改为三月，此后遂为定制；乡试法定八月，遇重大天灾、战乱、国丧偶有延至九、十月者（如嘉庆六年顺天延九月、道光二十三年河南延十月），同治三年江南甚至出现过十一月"冬闱"——均为特例，不改"秋闱"之名。</p>
+<p style="margin:0"><b>彩蛋</b>：2026 丙午，正是<b>乡试之年</b>。实例：1894 甲午（鼠）乡试 → 1895 乙未（牛）会试殿试，康有为、梁启超即赶乙未科春闱。</p>
+</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">上海市教育考试院（会试三月·殿试四月廿一）</span><span class="chip src-name">人民论坛网·科举延期考（乡试八月初八·例外延科）</span><span class="chip src-name">晋城市政府（院试约四五月）</span><span class="chip src-name">光明日报·殿试述略</span><span class="chip src-name">长沙图书馆·明清科举概说</span><span class="chip src-name">百度百科·童试（岁试/科试干支）</span><span class="chip local">◆ 本地档案《科举生肖大年表》设计原创</span></div>
+</div>
+
+<div class="card">
+<div style="font-size:15px;font-weight:500;margin-bottom:8px">理论极速通道：学童到进士，理论上只要三年</div>
+<p style="margin:0 0 8px">假设某学童在<b>寅虎年</b>投身科考：当年二月参加<b>县试</b>、四月参加<b>府试</b>、随后通过<b>院试（科试，约五六月，学政巡回定日）</b>，一年三考全部过关，进学为生员（秀才）；翌年<b>卯兔年</b>八月赴<b>秋闱乡试</b>，顺利中举；第三年<b>辰龙年</b>三月赴京师<b>会试</b>中式成贡士，再经<b>四月殿试</b>金榜题名为进士。</p>
+<p style="margin:0 0 12px"><b>理论上，从学童到进士，最快只需三年</b>——前提是关关一次过。现实中凤毛麟角，故有"白首童生""五十少进士"之叹。</p>
+<div style="display:flex;align-items:stretch;gap:8px">
+<div style="flex:1;min-width:0;background:#C0DD97;border:1px solid #639922;border-radius:8px;padding:10px">
+<div style="font-size:12px;color:#27500A;font-weight:500">第一年 · 寅虎</div>
+<div style="font-size:13px;font-weight:500;margin:3px 0;color:#2C2C2A">童生一年三考</div>
+<div style="font-size:12.5px;color:#173404">二月县试 → 四月府试 → 五六月院试<br>进学为<b>秀才</b></div>
+</div>
+<div style="align-self:center;color:#888780;font-size:16px">→</div>
+<div style="flex:1;min-width:0;background:#FAC775;border:1px solid #BA7517;border-radius:8px;padding:10px">
+<div style="font-size:12px;color:#633806;font-weight:500">第二年 · 卯兔</div>
+<div style="font-size:13px;font-weight:500;margin:3px 0;color:#2C2C2A">八月秋闱 · 乡试</div>
+<div style="font-size:12px;color:#412402">中<b>举人</b>（头名解元）</div>
+</div>
+<div style="align-self:center;color:#888780;font-size:16px">→</div>
+<div style="flex:1;min-width:0;background:#EF9F27;border:1px solid #854F0B;border-radius:8px;padding:10px">
+<div style="font-size:12px;color:#412402;font-weight:500">第三年 · 辰龙</div>
+<div style="font-size:13px;font-weight:500;margin:3px 0;color:#2C2C2A">春闱折桂</div>
+<div style="font-size:12.5px;color:#412402">三月会试 + 四月殿试<br>贡士（会元）→ <b>进士</b>（状元）</div>
+</div>
+</div>
+<div style="margin-top:10px;border:1px dashed #B4B2A9;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#444441">
+<b>注</b>：以寅虎年开考为例——<b>并非只有寅年起步才有此通道</b>。凡科试之年皆然：<b>巳蛇年</b>进学→午马年中举→未羊年折桂；<b>申猴年</b>进学→酉鸡年中举→戌狗年折桂；<b>亥猪年</b>进学→子鼠年中举→丑牛年折桂。快车道<b>三年一班车，从不缺席</b>——错过一班，等的是三年，绝非十二年。
+</div>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">晋城市政府·古代科举初探（学政三年岁考科考）</span><span class="chip local">◆ 推演模型（史实框架已核对，"三年通关"为理论极限）</span></div>
+</div>
 <script>
-(function() {
-    var links = document.querySelectorAll('.lesson-list li a[data-words]');
-    var totalDays = links.length;
-    var totalWords = 0;
-    links.forEach(function(link) {
-        var w = parseInt(link.getAttribute('data-words'), 10);
-        if (!isNaN(w)) totalWords += w;
-    });
-    var daysEl = document.getElementById('daysCount');
-    var wordsEl = document.getElementById('wordsCount');
-    if (daysEl) daysEl.textContent = '📅 已学 ' + totalDays + ' 天';
-    if (wordsEl) wordsEl.textContent = '✍️ 约 ' + totalWords + ' 字';
-
-    var totalBookWords = 16000;
-    var percent = Math.min(100, Math.round((totalWords / totalBookWords) * 100));
-    var fillEl = document.getElementById('progressFill');
-    if (fillEl) fillEl.style.width = percent + '%';
-
-    document.querySelectorAll('.book-grid a[href^="#"]').forEach(function(a) {
-        a.addEventListener('click', function(e) {
-            var target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
+(function(){
+var S={
+b:{bg:"#F7E6BE",bd:"#D99A2B",badge:"#8A6A14",tag:"乡试之年 · 秋闱",a:"<b>八月</b>乡试（省城贡院，初八入场）→ <b>中举人</b>，头名<b>解元</b>；次年春衔接会试",c:"县试✓ 二月｜府试✓ 四月｜<span style=\"color:#A04000;font-weight:500\">本年无院试</span>"},
+a:{bg:"#E6F1DC",bd:"#86A95F",badge:"#4E6B2F",tag:"会试·殿试之年 · 春闱",a:"<b>三月</b>会试（礼部，乾隆九年由二月改）<b>中贡士</b> → <b>四月</b>殿试<b>中进士</b>",c:"县试✓ 二月｜府试✓ 四月｜院试·<b>岁试</b>（约五六月，学政巡回定日）：进学为秀才，须待两年后卯年乡试"},
+c:{bg:"#F1EFE8",bd:"#B4B2A9",badge:"#6B6862",tag:"科试之年 · 休整",a:"本年无乡试·会试（科举歇年）",c:"县试✓ 二月｜府试✓ 四月｜院试·<b>科试</b>（约五六月，学政巡回定日）：进学为秀才；生员录科选优，明年即逢秋闱"}
+};
+var cells=[
+{k:"b",z:"子 鼠",g:"庚子",y:"2020-2056"},
+{k:"a",z:"丑 牛",g:"辛丑",y:"2021-2057"},
+{k:"c",z:"寅 虎",g:"壬寅",y:"2022-2058"},
+{k:"b",z:"卯 兔",g:"癸卯",y:"2023-2059"},
+{k:"a",z:"辰 龙",g:"甲辰",y:"2024-2060"},
+{k:"c",z:"巳 蛇",g:"乙巳",y:"2025-2061"},
+{k:"b",z:"午 马",g:"丙午",y:"2026-2062"},
+{k:"a",z:"未 羊",g:"丁未",y:"2027-2063"},
+{k:"c",z:"申 猴",g:"戊申",y:"2028-2064"},
+{k:"b",z:"酉 鸡",g:"己酉",y:"2029-2065"},
+{k:"a",z:"戌 狗",g:"庚戌",y:"2030-2066"},
+{k:"c",z:"亥 猪",g:"辛亥",y:"2031-2067"}
+];
+var g=document.getElementById("zodiacGrid");
+if(!g)return;
+var hidden=[];
+cells.forEach(function(c,idx){
+var s=S[c.k];
+var rest=(c.k==="c");
+var aCss=rest
+?"flex:1 1 0;min-height:92px;background:#F1EFE8;border:1px dashed #B4B2A9;border-radius:8px;padding:12px 14px;margin-bottom:9px;font-size:13.5px;line-height:1.7;color:#7d7c74"
+:"flex:1 1 0;min-height:92px;background:#FBEFD3;border:1px solid #E3C88A;border-left:4px solid #C99B45;border-radius:8px;padding:12px 14px;margin-bottom:9px;font-size:13.5px;line-height:1.7;color:#3f3e3b;box-shadow:1px 1px 0 #EAD9B0";
+var cCss="flex:1 1 0;min-height:92px;background:#fff;border:1px solid #D9D5C9;border-left:4px solid #A9A79E;border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.7;color:#3f3e3b;box-shadow:1px 1px 0 #E4E2DA";
+var d=document.createElement("div");
+d.style.cssText="border:2px solid "+s.bd+";border-radius:10px;background:"+s.bg+";padding:14px 14px 12px;display:flex;flex-direction:column";
+d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px">'+
+'<span style="font-family:var(--font-serif,\'STZhongsong\',\'SimSun\',serif);font-size:23px;font-weight:500;letter-spacing:4px;color:#3a3020">'+c.z+'</span>'+
+'<span style="font-size:12.5px;color:#6B5A38;white-space:nowrap">'+c.g+' '+c.y+'</span></div>'+
+'<div style="margin:8px 0 10px"><span style="background:'+s.badge+';color:#fff;font-size:13px;padding:3px 13px;border-radius:12px;display:inline-block">'+s.tag+'</span></div>'+
+'<div style="'+aCss+'"><b>正式科举</b>　'+s.a+'</div>'+
+'<div style="'+cCss+'"><b>童生进学</b>　'+s.c+'</div>';
+if(idx>=3){d.style.display="none";hidden.push(d);}
+g.appendChild(d);
+});
+var tg=document.getElementById("zodiacToggle"),mw=document.getElementById("zodiacMore"),hint=document.getElementById("zodiacHint");
+if(tg&&mw){
+mw.style.display="block";
+tg.addEventListener("click",function(){
+var open=hidden.length&&hidden[0].style.display==="none";
+hidden.forEach(function(d){d.style.display=open?"":"none";});
+if(hint)hint.style.display=open?"block":"none";
+tg.textContent=open?"收起，只看头三年 ↑":"点开看全部 12 年 ↓";
+});
+}
 })();
+</script>
+</div>
+
+<div id="c2-6">
+<h4><span class="idx">2.6</span>考场九天七夜实录</h4>
+<div class="card">
+<div class="tl">
+  <div class="day"><b>初八</b>进场·搜检·唱保</div>
+  <div class="day"><b>初九</b>第一场开考</div>
+  <div class="day"><b>初十</b>第一场续</div>
+  <div class="day"><b>十一</b>交卷出场·可歇一晚</div>
+  <div class="day"><b>十二</b>第二场开考</div>
+  <div class="day"><b>十三</b>第二场续</div>
+  <div class="day"><b>十四</b>交卷·最后一晚</div>
+  <div class="day"><b>十五</b>第三场开考</div>
+  <div class="day"><b>十六</b>交卷出场·终</div>
+</div>
+<p><b>号舍</b>：仅有上下两块木板——上板为桌、下板为凳，夜里两板一拼便是床。炭火一盆（取暖兼做饭）、蜡烛一枝，与外界完全隔绝。贡院大门关闭，考期未完不得离开。</p>
+<p><b>吃喝</b>：自备考篮干粮入场（届时要被兵丁掰碎检查有无夹带，↗ <a href="#c4-4">4.4</a>），监考官只管作弊，不管考生生活。每场最后一晚是唯一能出号舍、找客栈踏实睡一觉的机会。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">百度百科·乡试（引号舍史料）</span><span class="chip local">◆ 本地档案《考场吃喝拉撒问答》</span></div>
+</div>
+</div>
+</section>
+
+<!-- ================= 三、文体 ================= -->
+<section id="c3">
+<h3 class="sec">三 · 考什么：文体与内容<small>三场文体演变 · 八股解剖 · 策问</small></h3>
+<div class="crumb">三 · 文体 ／ 关联：↗ 2.2 乡试三场内容 · ↗ 3.3 崇祯殿试策问实例</div>
+
+<div class="tabbar" id="wenTiTabs">
+  <button class="on" data-p="p1">3.1 三场文体演变</button>
+  <button data-p="p2">3.2 八股文解剖</button>
+  <button data-p="p3">3.3 殿试策问实例</button>
+</div>
+<div class="pane on" id="p1">
+<div class="card">
+<h4 style="margin-top:0">从唐宋到明清，考试内容一路演变</h4>
+<table>
+  <tr><th>朝代</th><th>考试内容</th></tr>
+  <tr><td><b>唐</b></td><td>进士科初试时务策，高宗加帖经、杂文；玄宗天宝起杂文专用<b>诗赋</b>（"诗赋取士"）</td></tr>
+  <tr><td><b>宋</b></td><td>初承唐制试诗赋论策；熙宁四年（1071）王安石改试<b>经义</b>、论、策</td></tr>
+  <tr><td><b>明清</b></td><td>三场制：四书义 → 五经义 → 策论（以四书取士为主），乾隆五十二年（1787）成定制</td></tr>
+  <tr><td><b>1901改制</b></td><td>改中国政治史事论、各国政治艺学策——仅行三年即随科举废止</td></tr>
+</table>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">百度百科·贡举考试（引制度史）</span></div>
+</div>
+</div>
+<div class="pane" id="p2">
+<div class="card">
+<h4 style="margin-top:0">八股文：格式极死，却考了五百年</h4>
+<p>八股文又称制义、制艺、时文、四书文：以四书五经文句命题，只许"代圣贤立言"，用古人语气阐述义理；结构有一定程式——<b>破题两句 → 承题 → 起讲 → 起股、中股、后股、束股</b>（四股中各有两股排偶对仗，合称八股），字数句法皆有严格限制。明清乡会试头场考八股文，能否考中<b>主要取决于头场八股优劣</b>，故读书人毕生精力多耗于此。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">北京东城区图书馆·科举制度</span><span class="chip local">◆ 本地档案《八股文格式详解》互证</span></div>
+</div>
+</div>
+<div class="pane" id="p3">
+<div class="card">
+<h4 style="margin-top:0">殿试策问：皇帝亲自出题</h4>
+<p>殿试只考时务策一道，由皇帝出题。真实例题：</p>
+<table>
+  <tr><th>年份</th><th>策问题目</th></tr>
+  <tr><td>宣德五年（1430）</td><td>"用人何以得其力论"</td></tr>
+  <tr><td>崇祯七年（1634）</td><td>"士习不端，欲速见小……兹欲正士习以复古道，何术而可？……今欲灭敌恢疆，何策而效？……但欲恤民，又欲赡军，何道可能两济？"</td></tr>
+  <tr><td>康熙五十七年（1718）</td><td>江南乡试首题"举贤才焉知贤才而举之"、次题"大哉圣人之道"</td></tr>
+</table>
+<p class="flag" style="margin-top:6px">💡 出题是难事：录得英才，主考官声名鹊起；出得不好则被天下耻笑——万历年间冯梦祯与李廷机的"拟程之争"即源于此。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">人民网·明朝考生也要狂刷题海</span></div>
+</div>
+</div>
+</section>
+
+<!-- ================= 四、防弊 ================= -->
+<section id="c4">
+<h3 class="sec">四 · 防弊体系：保结制度<small>没有照片的时代如何验明正身</small></h3>
+<div class="crumb">四 · 防弊 ／ 关联：↗ 2.2 入场九天七夜 · ↗ 5.1 廪生身份 · ↗ 2.3 冒籍为何是重罪</div>
+
+<div class="card" id="c4-1">
+<h4 style="margin-top:0"><span class="idx">4.1</span>问题：一场没有照片的百万人大考</h4>
+<p>古代无照相、无指纹库、无学籍系统，冒名顶替却要防 1300 年。科举的答案是三条线：<b>① 考前——保结连坐</b>（信用背书 + 利益捆绑）；<b>② 入场——唱保核验</b>（声纹 + 相貌 + 行为三重验证）；<b>③ 考后——弥封誊录</b>（切断考官与考生的联系）。准考证为"<b>浮票 + 保单</b>"双件套：浮票记体貌特征（面白无须、身长五尺等），保单由保人担保身家清白。</p>
+<div class="src"><span class="chip local">◆ 本地档案《准考证及保举制度》</span></div>
+</div>
+
+<div class="card" id="c4-2">
+<h4 style="margin-top:0"><span class="idx">4.2</span>保人资格：只有"廪生"可做保</h4>
+<p>核心保人必须是<b>廪生（廪膳生员，lǐn shēng）</b>——生员三等中的最高一级，享受国家廪米廪银。"廪"字本义<b>官家粮仓</b>（甲骨文象形谷垛入屋宇），以禄养换信用，即"<b>食禄者担责</b>"。</p>
+<table>
+  <tr><th>生员等级</th><th>待遇</th><th>担保权</th></tr>
+  <tr><td><b>廪膳生员（廪生）</b></td><td>月领廪米六斗、银一两；名额极严（府学40、州学30、县学20）</td><td>✅ 唯一可签保单者</td></tr>
+  <tr><td>增广生员（增生）</td><td>无廪禄，廪生缺额时递补</td><td>❌</td></tr>
+  <tr><td>附学生员（附生）</td><td>初入学最低等级</td><td>❌（《儒林外史》周进屡遭羞辱即因只是附生）</td></tr>
+</table>
+<p><b>演进</b>：宋创"伍保连坐"（里甲长本地担保）→ 明中叶行"<b>认保制</b>"（考生自寻本县廪生，随行赴省）→ 乾隆朝改"<b>派保制</b>"（官府随机指派陌生廪生，切断利益链）→ 认保 + 派保<b>双保并行</b>。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">宁波市北仑区政府·科举称谓（廪增附三等）</span><span class="chip local">◆ 本地档案《"廪"字释义》《认保派保演变》</span></div>
+</div>
+
+<div class="card" id="c4-3">
+<h4 style="margin-top:0"><span class="idx">4.3</span>做保的待遇与风险：一份高危"副业"</h4>
+<table>
+  <tr><th>维度</th><th>内容</th></tr>
+  <tr><td><b>保结银</b></td><td>童试 0.5–1 两/人 · 院试 1.5–2 两/人 · 乡试 2–3 两/人 · 会试 5 两/人；预付定金、考后付尾款</td></tr>
+  <tr><td><b>灰色空间</b></td><td>冷籍或富家子弟参考须重金求廪生作保（"贽敬"）；加急换保翻倍；乾隆朝扬州曾查获垄断担保的"保结牙行"</td></tr>
+  <tr><td><b>规模上限</b></td><td>一名廪生最多保 30 人（偏远可 50）；职业保人年收入可达 200 两，远超廪膳正俸（年 4 两）</td></tr>
+  <tr><td><b>连坐风险</b></td><td>考生冒籍/作弊 → 保人同罪：雍正朝福建一案集体革除 32 名廪生功名；流放宁古塔亦有之</td></tr>
+  <tr><td><b>地域限制</b></td><td>本府异县可（需学官许可）· 本省异府❌ · 跨省绝对❌；会试例外可用在京同乡官员替代</td></tr>
+</table>
+<p class="flag">💡 保结制度本质：朝廷把身份核验成本"外包"给底层士人，用信用套现与连坐威慑，在没有身份技术的时代支撑起百万人大考——同时也榨取了廪生的剩余价值。</p>
+<div class="src"><span class="chip local">◆ 本地档案《保人酬劳专题问答》（数字为档案观点，未见于权威网络来源，置信度中）</span></div>
+</div>
+
+<div class="card" id="c4-4">
+<h4 style="margin-top:0"><span class="idx">4.4</span>做保流程：从互结到唱保</h4>
+<details class="acc" open><summary>第一步 · 考前：多重结保</summary><div class="inner">
+<p>考生五人"<b>互结</b>"（一人作弊五人连坐）、四邻"共结"，再由本县廪生"<b>认保</b>"签保单、官府指派"<b>派保</b>"复核。保单须载明姓名、籍贯、年龄、体貌、三代履历。</p>
+</div></details>
+<details class="acc" open><summary>第二步 · 赴省：保人随行</summary><div class="inner">
+<p>清制："<b>保结廪生未至，纵有浮票亦禁入辕门</b>"。乡试保人必须亲赴省城贡院；会试在京，边远考生可由在京同乡官员替代，但基础保单仍须本县廪生出具。常有保人率数十考生"团体远征"，雇骡车摊薄路费。</p>
+</div></details>
+<details class="acc" open><summary>第三步 · 入场：辕门初验 → 唱保 → 搜检</summary><div class="inner">
+<table>
+  <tr><th>环节</th><th>动作</th><th>防什么</th></tr>
+  <tr><td>① 辕门初验</td><td>差役按名册喝问姓名籍贯，保人递保单画押</td><td>冒名入闱</td></tr>
+  <tr><td>② <b>唱保</b></td><td>考生高声自报"某生蒙某廪生保结"，保人当场高声应答</td><td>替考（声纹+相貌+行为）</td></tr>
+  <tr><td>③ 脱衣搜身</td><td>解发除袜、掰碎干粮查夹带</td><td>夹带小抄</td></tr>
+</table>
+<p>嘉靖《南闱纪事》："唱保声里，枪手股栗不能应。"《南国贤书》载有保人因病未到、考生虽证件齐全仍被拒入场的案例。明代更有江西考生冒充顺天府籍应试、事发三代禁考的重案——对照 ↗ 2.3 的南北分卷，冒籍动的是"录取率"，故为时空双重防线（冒籍防地域作弊、匿丧防伦理作弊：丁忧 27 个月内隐丧应试属悖逆重罪）。</p>
+</div></details>
+<details class="acc"><summary>第四步 · 考后：弥封誊录磨勘（与保结互补的第二道防线）</summary><div class="inner">
+<p>考生墨笔作答为<b>墨卷</b>，交卷后弥封官糊名，编号交誊录生用朱砂誊为<b>朱卷</b>，对读生校对后分送内帘——考官只见朱卷不见笔迹姓名。放榜后调取墨卷核对红号当众开封；落卷也要加批语发还考生；中式举人另须<b>磨勘</b>、复试。</p>
+</div></details>
+<div class="src"><span class="chip local">◆ 本地档案（保结流程细节）</span><span class="chip ok">✓ 已核实</span><span class="chip src-name">360百科·科举制度（弥封誊录磨勘）</span></div>
+</div>
+
+<div class="card" id="c4-5">
+<h4 style="margin-top:0"><span class="idx">4.5</span>说辞模板 + 唐伯虎唱保模拟</h4>
+<p><b>标准唱保套语</b>（法定宣誓用语，核心四忌：冒籍·匿丧·顶替·捏造）：</p>
+<div class="note">
+考生："童生／生员 ○○○，年○○岁，面白无须，<b>认保廪生×××，派保廪生×××</b>。身家清白，并非冒籍、匿丧、顶替、捏造，亦无过犯逃籍。所保是实，甘愿连坐。"<br>
+保人（二人同时高声）："廪生×××，<b>保得○○○是实！</b>"
+</div>
+<p>下面是本地档案中还原的场景剧本——<b>弘治十一年（1498）八月初八卯时，南京江南贡院辕门外</b>，数千考生喧哗、铜锣与"肃静！"声里：</p>
+<div class="drama">
+  <div class="act">第一幕 · 辕门初验</div>
+  <div class="line" style="margin:6px 0"><span class="who">差役</span>（翻名册喝问）："苏州府下一人！报姓名籍贯！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">唐寅</span>（昂首朗声）："苏州府吴县<span class="shout">唐寅</span>！字伯虎！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">差役</span>（指保人）："保结廪生何在？！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">保人</span>（躬身递保单）："廪生在此！<span class="shout">保唐寅身家清白，无冒籍匿丧！</span>"（差役比对浮票，朱笔勾名）</div>
+  <div class="act">第二幕 · 搜检棚唱保</div>
+  <div class="line" style="margin:6px 0"><span class="who">搜检官</span>（击鼓三声）："唱保——！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">唐寅</span>（声震瓦砾）："苏州府吴县唐寅！<span class="shout">蒙周师保结！</span>身家清白，并非冒籍匿丧顶替捏造。所保是实，甘愿连坐！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">保人</span>（拱手疾应）："廪生在此！<span class="shout">保唐寅入场——是实！</span>"</div>
+  <div class="cue" style="margin:6px 0">（围观考生骚动："可是画洞庭黄的唐解元？""噤声！仪制！"）</div>
+  <div class="act">第三幕 · 脱衣搜身</div>
+  <div class="line" style="margin:6px 0"><span class="who">兵丁</span>（掰碎炊饼）："哼，苏式糕团？劈开！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">唐寅</span>（朗笑指天）："公疑纸笺藏蜜馅？不如剖腹验诗书！"</div>
+  <div class="line" style="margin:6px 0"><span class="who">搜检官</span>（拍案）："狂生！速入玄字柒拾叁号！"</div>
+</div>
+<div class="note">🎭 <b>考据注脚</b>：① 唐寅之师周臣实为吴门画派大家，但仅为生员未至廪生，代其作保属<b>文学演绎</b>（明制保人须廪生）；② 唐寅"性颖利，与里狂生张灵纵酒"，狂放对白符合《明史》记载；③ 此科唐寅果然高中应天府<b>解元</b>——但次年即因徐经科场案牵连被革黜，永绝仕途。辕门那一声"保唐寅！"，竟成绝响。</div>
+<div class="src"><span class="chip local">◆ 本地档案《唐伯虎入场三幕剧本》（文学演绎，史实框架已核对）</span></div>
+</div>
+</section>
+
+<!-- ================= 五、功名与待遇 ================= -->
+<section id="c5">
+<h3 class="sec">五 · 功名与待遇<small>每一级身份值多少钱</small></h3>
+<div class="crumb">五 · 待遇 ／ 关联：↗ 2.1–2.4 各级身份 · 5.4 米价折算为全章换算基准</div>
+
+<div class="card" id="c5-1">
+<h4 style="margin-top:0"><span class="idx">5.1</span>秀才：脱离平民，但尚不能做官</h4>
+<p>生员特权：免赋役差役、见官不跪、戴方巾着长靴、遇公事可票见知县、诉讼免刑。但<b>秀才没有做官资格</b>，只有继续考或入国子监读书的资格——秀才与举人之间，隔着一道"中举"的阶层天堑。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">ima 知识库·科举图示（秀才特权）</span></div>
+</div>
+
+<div class="card" id="c5-2">
+<h4 style="margin-top:0"><span class="idx">5.2</span>举人：一次跨越，三重跃迁</h4>
+<table>
+  <tr><th>维度</th><th>内容</th></tr>
+  <tr><td><b>身份</b></td><td>跃升"举人老爷"，入乡绅阶层；匾额、牌坊、20 两牌坊银；婚姻市场"潜力股"</td></tr>
+  <tr><td><b>法律</b></td><td>见官不跪、不过堂、不用刑；刑事须先革功名方可动刑（杨乃武案即为先例）</td></tr>
+  <tr><td><b>仕途</b></td><td><b>具备做官资格</b>：可经"大挑"直接补缺任知县、教谕、县丞——会试不中也保底有官做（海瑞即举人出身）</td></tr>
+  <tr><td><b>经济</b></td><td>免田赋约 200 亩、免 10 人徭役（名额可出让获利）；乡绅"投献"田产；会试官府给路费</td></tr>
+</table>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">ima 知识库（举人特权图示）</span><span class="chip src-name">人民网（"中举即老爷"）</span><span class="chip local">◆ 本地档案《中举待遇》专论互证</span></div>
+</div>
+
+<div class="card" id="c5-3">
+<h4 style="margin-top:0"><span class="idx">5.3</span>进士：金字塔的顶端</h4>
+<p>一甲三人直授翰林（修撰/编修）；二甲三甲经朝考分流入翰林（庶吉士）、六部、御史、知县（榜下即用"老虎班"）。翰林三年散馆后升迁极快，明清形成"非进士不入翰林，非翰林不入内阁"的宰相养成路径。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">Wikiwand·中国科举制度</span><span class="chip src-name">北京东城区图书馆</span></div>
+</div>
+
+<div class="card" id="c5-4">
+<h4 style="margin-top:0"><span class="idx">5.4</span>经济账：米价折算古今对比</h4>
+<p>换算基准（双源）：明清 1 两 ≈ 37.3 克银 × 6.5 元/克 ≈ 240 元；按康乾米价 1 石（60 公斤）≈ 1 两，今米价 5.5 元/公斤折算 ≈ 330 元/两。综合取<b>清代中后期 1 两 ≈ 200–300 元</b>。</p>
+<div class="bars">
+  <div class="bar-row"><span class="lbl">普通农户（年）</span><div class="track"><div class="fill" data-w="4%"></div></div><span class="val">≈10 两 ≈ 0.3 万元</span></div>
+  <div class="bar-row"><span class="lbl">廪生（秀才保人，年）</span><div class="track"><div class="fill" data-w="12%"></div></div><span class="val">≈64 两 ≈ 2 万元</span></div>
+  <div class="bar-row"><span class="lbl">私塾教师（年）</span><div class="track"><div class="fill" data-w="20%"></div></div><span class="val">20–40 两 ≈ 0.6–1.2 万</span></div>
+  <div class="bar-row"><span class="lbl">知县正俸（年）</span><div class="track"><div class="fill" data-w="30%"></div></div><span class="val">45 两 ≈ 1.4 万（另有养廉银）</span></div>
+  <div class="bar-row"><span class="lbl">知县养廉银（年）</span><div class="track"><div class="fill" data-w="70%"></div></div><span class="val">400–2259 两（合法列支）</span></div>
+  <div class="bar-row"><span class="lbl">无职举人常态收入（年）</span><div class="track"><div class="fill" data-w="55%"></div></div><span class="val">≈300–500 两 ≈ 8–20 万元</span></div>
+</div>
+<p><b>关键认知</b>：举人没有"死工资"（"月俸三十两"系误解，举人非实职官员不领俸禄），其收入是"<b>制度性套利</b>"——免税特权变现（核心，上不封顶）+ 书院山长教学（80–200 两/年）+ 润笔作保馈赠（50–300 两/年）。而秀才层的廪生年入仅够"普通职员月薪"，可见中举才是真正的阶层天堑。</p>
+<div class="src"><span class="chip local">◆ 本地档案《廪生收入米价折算全表》《举人收入结构》（数字为档案推算）</span><span class="chip ok">✓ 银价/米价换算法已核对</span><span class="chip src-name">养廉银标准见光绪《清会典事例》（档案引）</span></div>
+</div>
+</section>
+
+<!-- ================= 六、榜单与仪式 ================= -->
+<section id="c6">
+<h3 class="sec">六 · 榜单与仪式<small>考完只是开始，风光在榜与宴</small></h3>
+<div class="crumb">六 · 仪式 ／ 关联：↗ 2.2 乡试放榜 · ↗ 2.4 金榜授官</div>
+
+<div class="card" id="c6-1">
+<h4 style="margin-top:0"><span class="idx">6.1</span>三大放榜：桂榜 → 杏榜 → 金榜</h4>
+<div class="chart-wrap">
+<svg viewBox="0 0 680 110" width="100%">
+  <g font-size="12">
+    <rect x="25" y="25" width="180" height="52" rx="10" fill="#c8a86e"/>
+    <text x="115" y="47" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">桂榜（九月）</text>
+    <text x="115" y="66" text-anchor="middle" font-size="10.5" fill="#4a3a10">乡试·桂花香时·举人</text>
+    <path d="M210 51 L250 51" stroke="#a5721f" stroke-width="3" marker-end="url(#ar2)"/>
+    <rect x="255" y="25" width="180" height="52" rx="10" fill="#a5721f"/>
+    <text x="345" y="47" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">杏榜（四月十五）</text>
+    <text x="345" y="66" text-anchor="middle" font-size="10.5" fill="#fff">会试·杏花时节·贡士</text>
+    <path d="M440 51 L480 51" stroke="#a5721f" stroke-width="3" marker-end="url(#ar2)"/>
+    <rect x="485" y="25" width="170" height="52" rx="10" fill="#a5721f"/>
+    <text x="570" y="47" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">金榜（黄纸·甲榜）</text>
+    <text x="570" y="66" text-anchor="middle" font-size="10.5" fill="#f3d9d5">殿试·皇帝亲定·进士</text>
+    <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#a5721f"/></marker></defs>
+  </g>
+</svg>
+<div class="chart-cap">放榜链条：桂榜 → 杏榜 → 金榜，榜色越来越贵重</div>
+</div>
+<p>填榜也有仪式感：乡试榜从第六名写起，末名写完再倒写前五名（"五经魁"），填至深夜、燃巨红花烛，经魁出自哪一房官即置红烛一对于其案前；经魁唱名声音特高，称"<b>闹五魁</b>"。清人多选寅、辰日放榜——取"龙虎榜"之意。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">360百科（闹五魁·龙虎榜）</span><span class="chip src-name">鹤壁日报（桂杏金榜）</span></div>
+</div>
+
+<div class="card" id="c6-2">
+<h4 style="margin-top:0"><span class="idx">6.2</span>宴礼与题名碑</h4>
+<table>
+  <tr><th>仪式</th><th>内容</th></tr>
+  <tr><td><b>鹿鸣宴</b></td><td>乡试放榜次日，巡抚衙门设宴，主考、帘官与新科举人共宴，奏《诗经·鹿鸣》之章、作魁星舞</td></tr>
+  <tr><td><b>恩荣宴</b></td><td>殿试后的进士宴；唐代称"曲江宴"、宋代称"琼林宴/闻喜宴"</td></tr>
+  <tr><td><b>题名碑</b></td><td>刻碑题名立于北京孔庙：现存元代三座、明代七十七座、清代一百一十二科进士题名碑</td></tr>
+  <tr><td><b>唱名赐第</b></td><td>皇宫大殿举行，隆重异常——"天子门生"的点将台</td></tr>
+</table>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">百度百科·贡举考试（宴礼题名碑）</span><span class="chip src-name">360百科（鹿鸣宴细节）</span></div>
+</div>
+</section>
+
+<!-- ================= 七、荣誉之巅 ================= -->
+<section id="c7">
+<h3 class="sec">七 · 荣誉之巅<small>三元 · 六元 · 状元地理</small></h3>
+<div class="crumb">七 · 荣誉 ／ 关联：↗ 2.1 小三元（县府院案首）与 7.1 大三元对照</div>
+
+<div class="card" id="c7-1">
+<h4 style="margin-top:0"><span class="idx">7.1</span>三元及第：1300 年仅 14 人</h4>
+<p>一身兼<b>解元、会元、状元</b>即"连中三元"（大三元）。历代共 14 人：唐代 2（张又新、崔元翰）、宋代 6（孙何、王曾、宋庠、杨寘、王若叟、冯京）、金 1（孟宗献）、元 1（王崇哲）、<b>明 2（黄观、商辂）</b>、<b>清 2（钱棨、陈继昌）</b>。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">Wikiwand·中国科举制度（14 人名单）</span><span class="chip src-name">交汇点新闻（黄观钱棨"六元"说）</span></div>
+</div>
+
+<div class="card" id="c7-2">
+<h4 style="margin-top:0"><span class="idx">7.2</span>六元及第：史上仅 2 人的"超级学霸"</h4>
+<p>若把童试三关的案首也算上——县、府、院、乡、会、殿六级全第一，称"<b>六元及第</b>"，1300 年间仅两人：<b>明代黄观</b>（安徽池州）与<b>清代钱棨</b>（苏州）。乾隆为钱棨题《三元诗》，苏州建"<b>三元坊</b>"——即今人民路三元坊地名由来。网络流传"六元及第唯二人"之说与本馆本地档案一致，但黄观一级是否算"县案首"史料存争议，已标注存疑。</p>
+<div class="src"><span class="chip ok">✓ 已核实（唯二名单）</span><span class="chip src-name">交汇点新闻·江苏状元地理</span><span class="chip local">◆ 本地档案《钱棨专题》互证</span><span class="chip src-name" style="background:#f5f0e0;color:#8a7a30">△ 黄观"六元"细节存学术争议</span></div>
+</div>
+
+<div class="card" id="c7-3">
+<h4 style="margin-top:0"><span class="idx">7.3</span>状元地理：苏州现象</h4>
+<p>历代状元总数约 500–700 人（统计口径不一），<b>江苏籍居全国第一</b>：清代 114 名状元中江苏占 49 席，其中<b>苏州 26 名</b>，居全国府级第一——"状元之乡"由此得名。南京现存朱状元巷、秦状元巷、三元巷等遗迹；苏州归氏家族唐代不到 40 年连出两对兄弟状元、一对父子状元。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">交汇点新闻·不管谁第一，你都是第一</span><span class="chip local">◆ 本地档案《苏州状元系列》呼应</span></div>
+</div>
+</section>
+
+<!-- ================= 八、趣味 ================= -->
+<section id="c8">
+<h3 class="sec">八 · 趣味冷知识<small>体系之外的枝叶</small></h3>
+<div class="crumb">八 · 趣味 ／ 与各章交叉：均有出处标注</div>
+<div class="card">
+<details class="acc"><summary>🎩 "相公"与"员外"：称谓里的阶层</summary><div class="inner">范进中秀才即被称"相公"，是生员雅称；"员外"源自员外郎官职，明清捐纳可得，与科举功名是两回事。</div></details>
+<details class="acc"><summary>⏳ 丁忧为何是 27 个月而不是 36 个月</summary><div class="inner">守制按"三年之丧"折算为 27 个月，两头各扣一月、中间足月——"慎终追远"的弹性设计。考生匿丧应试属重罪，故唱保必喊"无匿丧"（↗ 4.4）。</div></details>
+<details class="acc"><summary>📜 "及第"二字的精确含义</summary><div class="inner">"及"= 达到，"第"= 名次等级。且"进士及第"专指殿试一甲三名；二甲只称"进士出身"。孟郊"一日看尽长安花"、今之"状元及第粥"，皆源于此荣誉天花板（↗ 2.4）。</div></details>
+<details class="acc"><summary>🏛 "闱"字三义</summary><div class="inner">宫中小门（椒闱/宫闱）→ 考场借称（棘闱/锁闱/号闱）→ 衍生术语（秋闱/春闱/巡闱）。考场"围墙三重、布满荆棘"故称棘闱，《五代史》"以棘围之"。</div></details>
+<details class="acc"><summary>🦊 落榜生也有一线生机：副榜与恩科</summary><div class="inner">乡试每正榜五名取副榜一名（副贡）；皇家有喜庆大事加开"恩科"，多一次机会。康熙二年曾废八股改二场制，只行两科即恢复旧制——制度也有反复。</div></details>
+<details class="acc"><summary>💰 举人为什么能"白得地"</summary><div class="inner">举人名下田地免税（约200亩）+ 免徭役名额，平民为避税把田"投献"到举人名下，举人坐收"寄居费"——这正是《儒林外史》范进中举后"送房送田"的经济逻辑（↗ 5.4）。</div></details>
+<div class="src"><span class="chip local">◆ 本地档案</span><span class="chip ok">✓ 部分已核实</span></div>
+</div>
+</section>
+
+<!-- ================= 九、辞典 ================= -->
+<section id="c9">
+<h3 class="sec">九 · 名词速查辞典<small>全文搜索可直接命中词条</small></h3>
+<div class="crumb">九 · 辞典 ／ 按拼音首组排序</div>
+<div class="card">
+<dl class="dict">
+<dt>案首</dt><dd>县试、府试、院试头名的通称；三场皆案首称"小三元"。</dd>
+<dt>大挑</dt><dd>举人屡会试不中者，由朝廷挑选直接授官（知县、教谕等）的制度。</dd>
+<dt>丁忧</dt><dd>父母（祖父母）丧期守制 27 个月，期间不得应试出仕；隐匿应试称"匿丧"，为重罪。</dd>
+<dt>恩科</dt><dd>遇朝廷庆典加开的考试，正常三年一科之外的加试。</dd>
+<dt>浮票</dt><dd>古代"准考证"的体貌登记页，记面白无须、身长五尺等，与保单合用核验身份。</dd>
+<dt>廪生</dt><dd>廪膳生员，生员最高一等，月领廪米六斗、银一两，唯一有考生担保权者；"廪"本义粮仓。</dd>
+<dt>鹿鸣宴</dt><dd>乡试放榜次日巡抚设宴，奏《鹿鸣》、作魁星舞，为新科举人庆功。</dd>
+<dt>冒籍</dt><dd>冒充他州县籍贯应试（多流向录取率高的边远地区），事发革功名、保人同罪。</dd>
+<dt>磨勘</dt><dd>乡试放榜后试卷调礼部复查的制度。</dd>
+<dt>墨卷 / 朱卷</dt><dd>考生墨笔原卷为墨卷；糊名后由誊录生朱笔誊抄为朱卷送考官，防辨认笔迹。</dd>
+<dt>闹五魁</dt><dd>乡试填榜倒写前五名时经魁唱名特响的仪式。</dd>
+<dt>派保 / 认保</dt><dd>派保：官府随机指派陌生廪生担保（乾隆后）；认保：考生自寻本县廪生担保。双保并行。</dd>
+<dt>唱保</dt><dd>入场点名时考生高声自报保人、保人当场高声应答确认的核验制度，"唱保声里，枪手股栗不能应"。</dd>
+<dt>解元 / 亚元 / 经魁 / 亚魁</dt><dd>乡试第一 / 第二 / 三至五名 / 第六名的称谓。</dd>
+<dt>杏榜 / 桂榜 / 金榜</dt><dd>会试 / 乡试 / 殿试放榜的别称，时值杏花、桂花，殿榜为黄纸故名金榜。</dd>
+<dt>三鼎甲</dt><dd>殿试一甲三名：状元、榜眼、探花的合称。</dd>
+<dt>传胪</dt><dd>二甲、三甲第一名的称谓（一甲第一名则称状元/鼎元）。</dd>
+<dt>座主 / 总裁</dt><dd>会试主考官的称谓，中式者对其执门生礼。</dd>
+<dt>老虎班</dt><dd>进士愿任知县者"榜下即用"不必候补，号称老虎班。</dd>
+<dt>庶吉士</dt><dd>新进士中朝考优秀者入翰林院进修，三年后散馆考试合格授编修、检讨，升迁极快。</dd>
+</dl>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip local">◆ 部分词条含本地档案细节</span></div>
+</div>
+</section>
+
+<!-- ================= 附录 ================= -->
+<section id="c10">
+<h3 class="sec">附录 · 资料来源与可信度说明</h3>
+<div class="card">
+<h4 style="margin-top:0">三类来源与标注规则</h4>
+<table>
+  <tr><th>标记</th><th>来源类型</th><th>示例</th></tr>
+  <tr><td><span class="chip ok">✓ 已核实</span></td><td>权威网络来源，多源交叉印证</td><td>故宫博物院、中国第一历史档案馆、人民网、宁波市北仑区政府、北京东城区图书馆、交汇点新闻、鹤壁日报、Wikiwand</td></tr>
+  <tr><td><span class="chip local">◆ 本地档案</span></td><td>DeepSeek 历史对话（140 个科举相关对话，精读 6 个核心）</td><td>《六级升级之路》《准考证及保举制度》《中举待遇》《唐伯虎唱保模拟》等</td></tr>
+  <tr><td>△ 存疑</td><td>孤证或学术有争议</td><td>黄观"六元及第"细节；本地档案中的银两收入数字（为推算值）</td></tr>
+</table>
+<h4>核实与存疑清单</h4>
+<table>
+  <tr><th>内容</th><th>结论</th></tr>
+  <tr><td>六级考试框架、干支年份、三场日期与文体</td><td>✓ 本地档案与故宫/一史馆完全一致，可信度高</td></tr>
+  <tr><td>各级头名称谓（案首/解元/会元/状元…）</td><td>✓ 多源一致；补充了本地档案缺失的"亚元/经魁/亚魁/传胪"</td></tr>
+  <tr><td>保结唱保流程</td><td>框架✓（与制度史吻合）；保结银数额、保人上限为本地档案观点，未见权威出处，<b>置信度中</b></td></tr>
+  <tr><td>米价折算（1 两≈200–300 元）</td><td>△ 方法合理（白银市价法+米价购买力法互证），但银价米价逐年波动，数字应视为<b>量级参考</b></td></tr>
+  <tr><td>唐伯虎唱保剧本</td><td>○ 文学演绎：史实框架（1498 应天乡试、中解元、次年科场案）已核实，对白与"周臣作保"为虚构</td></tr>
+</table>
+</div>
+</section>
+
+<footer>
+科举知识体系 · 树状版 ｜ 数据底稿：DeepSeek 历史导出包（2026-09-19，687 对话 / 140 个科举相关）｜ 网络核实：故宫博物院、中国第一历史档案馆、人民网等 ｜ 生成：WorkBuddy 2026-09-19
+</footer>
+</main>
+</div>
+<script>
+// 树形导航折叠
+document.querySelectorAll('#tree .node>span .caret').forEach(c=>{
+  c.addEventListener('click',e=>{
+    e.preventDefault();
+    const li=c.closest('li.node');
+    li.classList.toggle('closed');
+  });
+});
+document.querySelectorAll('#tree .node.l1>span>a').forEach(a=>{
+  a.addEventListener('click',()=>a.closest('li.node.l1').classList.remove('closed'));
+});
+// Tab
+document.querySelectorAll('.tabbar button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.tabbar button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+    document.getElementById(b.dataset.p).classList.add('on');
+  });
+});
+// 条形动画
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.style.width=e.target.dataset.w;io.unobserve(e.target);}
+}),{threshold:.4});
+document.querySelectorAll('.fill').forEach(f=>io.observe(f));
+// 全文搜索高亮
+const q=document.getElementById('q');let marks=[];
+const qCount=document.getElementById('qCount');
+q.addEventListener('input',()=>{
+  marks.forEach(el=>{const t=document.createTextNode(el.textContent);el.parentNode.replaceChild(t,el);});marks=[];
+  if(qCount)qCount.textContent='';
+  const kw=q.value.trim();if(!kw)return;
+  const root=document.querySelector('main');if(!root)return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    acceptNode:n=>{
+      const p=n.parentNode.nodeName;
+      if(p==='SCRIPT'||p==='STYLE'||p==='MARK')return NodeFilter.FILTER_REJECT;
+      return n.textContent.includes(kw)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+    }
+  });
+  const targets=[];while(walker.nextNode())targets.push(walker.currentNode);
+  targets.slice(0,400).forEach(n=>{
+    const frag=document.createDocumentFragment();const text=n.textContent;let i=0,idx;
+    while((idx=text.indexOf(kw,i))!==-1){
+      frag.appendChild(document.createTextNode(text.slice(i,idx)));
+      const m=document.createElement('mark');m.textContent=text.slice(idx,idx+kw.length);
+      m.style.cssText='background:#F0DFA8;color:#6B4A00;border-radius:2px;padding:0 1px';
+      frag.appendChild(m);marks.push(m);
+      i=idx+kw.length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(i)));
+    n.parentNode.replaceChild(frag,n);
+  });
+  if(qCount)qCount.textContent=marks.length?('命中 '+marks.length+' 处'):'无结果';
+  if(marks.length)marks[0].scrollIntoView({block:'center',behavior:'smooth'});
+});
+// 锚点点击后侧栏折叠不收起
+document.querySelectorAll('#tree a').forEach(a=>a.addEventListener('click',e=>{
+  const li=a.closest('li.node');if(li&&li.classList.contains('closed'))li.classList.remove('closed');
+  document.querySelectorAll('#tree a').forEach(x=>x.style.background='');
+  a.style.background='var(--accent-soft)';
+}));
+// 浏览模式切换（记忆偏好）
+const modeBtns=document.querySelectorAll('[data-mode-btn]');
+function setMode(m){
+  document.body.classList.toggle('mode-top',m==='top');
+  document.body.classList.toggle('mode-side',m==='side');
+  try{localStorage.setItem('kjMode',m)}catch(e){}
+  modeBtns.forEach(b=>b.classList.toggle('on',b.dataset.modeBtn===m));
+}
+modeBtns.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.modeBtn)));
+let savedMode='side';try{savedMode=localStorage.getItem('kjMode')||'side'}catch(e){}
+setMode(savedMode);
+// 阅读进度条
+const pbar=document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  pbar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+// 滚动监听：当前章节导航高亮
+const chapSecs=[...document.querySelectorAll('main section[id]')];
+const spy=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const id=e.target.id;
+    document.querySelectorAll('.topbar a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));
+    document.querySelectorAll('#tree a').forEach(a=>{
+      const on=a.getAttribute('href')==='#'+id;
+      a.style.background=on?'var(--accent-soft)':'';
+      a.style.color=on?'var(--accent)':'';
+      if(on)a.closest('.node')?.classList.remove('closed');
+    });
+  });
+},{rootMargin:'-25% 0px -65% 0px'});
+chapSecs.forEach(s=>spy.observe(s));
 </script>
 </body>
 </html>
