@@ -144,6 +144,27 @@ body.mode-side .topbar{display:none}
 
 /* ===== 阅读进度条 ===== */
 #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:100;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+
+/* ===== 手机端适配 ===== */
+@media(max-width:700px){
+  /* 顶部索引：单行横滑，不再折行 */
+  .topbar{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:9px 12px;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .topbar::-webkit-scrollbar{display:none}
+  .topbar .t-brand{position:sticky;left:0;flex-shrink:0;z-index:1;background:rgba(247,243,234,.96);padding-right:12px;margin-right:2px;box-shadow:6px 0 8px -4px rgba(90,60,20,.12)}
+  .topbar a{font-size:12px;padding:4px 11px;flex-shrink:0}
+  .topbar a.active{position:relative}
+  /* 模式切换钮缩小 */
+  .mode-fab{bottom:16px;right:14px}
+  .mode-fab button{font-size:12px;padding:7px 13px}
+  /* 卷首状元帽+文字纵向堆叠 */
+  header.hero{padding:26px 20px}
+  header.hero img{width:104px!important;height:104px!important}
+  header.hero h2{font-size:24px!important;letter-spacing:4px!important}
+  /* 生肖轮盘单列 */
+  #zodiacGrid{grid-template-columns:1fr!important}
+  /* 宽表格横向滑动不撑破卡片 */
+  .card{overflow-x:auto}
+}
 </style>
 </head>
 <body class="mode-side">
