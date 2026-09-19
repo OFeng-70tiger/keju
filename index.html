@@ -123,7 +123,7 @@ details.acc .inner{padding:2px 20px 16px;font-size:14px;color:#4c4230;border-top
 .pane{display:none}.pane.on{display:block}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:700px){.grid2{grid-template-columns:1fr}.bar-row .lbl{width:110px}.bar-row .val{width:110px}}
-@media(max-width:900px){.layout{flex-direction:column}aside{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:20px 14px}}
+@media(max-width:900px){.layout{flex-direction:column;align-items:stretch}aside{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:20px 14px;width:100%;max-width:100vw}}
 mark{background:#ecd9a4;padding:0 1px;border-radius:2px}
 footer{color:var(--ink2);font-size:12.5px;text-align:center;letter-spacing:1px;border-top:1px solid var(--line);margin-top:44px;padding-top:18px}
 
@@ -236,11 +236,12 @@ body.mode-side .topbar{display:none}
         <li class="node"><span><span class="twig">└</span><a href="#c6-2">6.2 宴礼与题名碑</a></span></li>
       </ul>
     </li>
-    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c7">七 · 荣誉之巅</a><span class="badge">3</span></span>
+    <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c7">七 · 荣誉之巅</a><span class="badge">4</span></span>
       <ul>
         <li class="node"><span><span class="twig">├</span><a href="#c7-1">7.1 三元及第（14 人）</a></span></li>
         <li class="node"><span><span class="twig">├</span><a href="#c7-2">7.2 六元及第（2 人）</a></span></li>
-        <li class="node"><span><span class="twig">└</span><a href="#c7-3">7.3 状元地理：苏州现象</a></span></li>
+        <li class="node"><span><span class="twig">├</span><a href="#c7-3">7.3 钱棨：屡败屡战</a></span></li>
+        <li class="node"><span><span class="twig">└</span><a href="#c7-4">7.4 状元地理：苏州现象</a></span></li>
       </ul>
     </li>
     <li class="node l1 closed"><span><span class="caret">▼</span><a href="#c8">八 · 趣味冷知识</a></span></li>
@@ -803,7 +804,20 @@ tg.textContent=open?"收起，只看头三年 ↑":"点开看全部 12 年 ↓";
 </div>
 
 <div class="card" id="c7-3">
-<h4 style="margin-top:0"><span class="idx">7.3</span>状元地理：苏州现象</h4>
+<h4 style="margin-top:0"><span class="idx">7.3</span>钱棨的另一面：六元光环之下，是屡败屡战</h4>
+<p>"连中六元"听上去像天纵英才、一路开挂——<b>其实恰恰相反</b>。钱棨（1734–1799，苏州人）科举前半程几乎场场落榜，堪称"要么落榜、要么第一"的极端样本：除落榜外，他这辈子<b>没考过第二名</b>。</p>
+<table>
+<tr><th>关卡</th><th>经历</th><th>年龄</th></tr>
+<tr><td><b>童试</b></td><td>《吴县志》："应童子试，<b>辄不利</b>"——少年起多次落榜；乾隆三十一年(1766)县、府、院三试终全夺第一（小三元·案首），进学为秀才</td><td><b>32 岁</b></td></tr>
+<tr><td><b>乡试</b></td><td>"六进考场，六次落榜""六试棘围不售，志益锐，文益纯，而境益困"——十三年间被讥为"百搭老秀才"；乾隆四十四年(1779)第七次赴考，终夺<b>解元</b></td><td><b>45 岁</b></td></tr>
+<tr><td><b>会试·殿试</b></td><td>乾隆四十六年(1781)辛丑科<b>一次连捷</b>：会元＋状元。殿试原被阅卷官拟为第四，乾隆为成"三元"之典亲擢第一，朱笔御题"第一甲第一名"</td><td><b>47 岁</b></td></tr>
+</table>
+<p>所以他的传奇精确表述是：<b>前期屡败屡战十五年，一旦过线，关关头名</b>。对比苏州历代状元中状元的年龄——徐元文 25、王世琛 32、张书勋 34、陆肯堂 35、徐陶璋 41——<b>钱棨 47 岁，是"状元之乡"里典型的老龄状元</b>。这不是天资绝顶的故事，而是耐力与运气交织的跌宕人生。</p>
+<div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">苏州市地方志办</span><span class="chip src-name">环球人物网</span><span class="chip src-name">《吴县志》卷七十一</span><span class="chip local">◆ 本地档案《钱棨落榜经历》呼应</span><span class="chip src-name" style="background:#f5f0e0;color:#8a7a30">△ 生年有 1742 一说；1779 年乡试涉恩科；"抑秦承业扬钱棨"属野史</span></div>
+</div>
+
+<div class="card" id="c7-4">
+<h4 style="margin-top:0"><span class="idx">7.4</span>状元地理：苏州现象</h4>
 <p>历代状元总数约 500–700 人（统计口径不一），<b>江苏籍居全国第一</b>：清代 114 名状元中江苏占 49 席，其中<b>苏州 26 名</b>，居全国府级第一——"状元之乡"由此得名。南京现存朱状元巷、秦状元巷、三元巷等遗迹；苏州归氏家族唐代不到 40 年连出两对兄弟状元、一对父子状元。</p>
 <div class="src"><span class="chip ok">✓ 已核实</span><span class="chip src-name">交汇点新闻·不管谁第一，你都是第一</span><span class="chip local">◆ 本地档案《苏州状元系列》呼应</span></div>
 </div>
