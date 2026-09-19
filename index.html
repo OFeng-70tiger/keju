@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论语 · 每日学习目录</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+            background: #faf8f5; color: #2c2c2c;
+            display: flex; justify-content: center;
+            padding: 3rem 1.5rem;
+        }
+        .app { max-width: 900px; width: 100%; display: flex; flex-direction: column; gap: 2rem; }
+
+        .header { border-bottom: 2px solid #d4c5a0; padding-bottom: 1.8rem; }
+        .intro-row {
+            display: flex; align-items: center; gap: 2rem;
+            text-align: left; margin-bottom: 1.5rem;
+        }
+        .intro-img { flex: 0 0 140px; text-align: center; }
+        .intro-img img {
+            width: 140px; height: auto; border-radius: 12px;
+            border: 1px solid #dacfc0; box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        .intro-img .img-caption {
+            font-size: 0.75rem; color: #8a7a64; margin-top: 0.4rem;
+        }
+        .intro-text { flex: 1; }
+        .intro-text h1 {
+            font-size: 2.2rem; font-weight: 500; letter-spacing: 6px;
+            color: #3e2e1f; margin-bottom: 0.6rem;
+        }
+        .intro-text p {
+            font-size: 0.95rem; line-height: 1.8; color: #5a4a38;
+        }
+        .header .sub {
+            color: #6b5a44; font-size: 1rem;
+            display: flex; gap: 1.2rem; flex-wrap: wrap;
+        }
+        .header .sub span { background: #e8e0d4; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.9rem; }
+        .progress-bar {
+            background: #e2d7c8; height: 6px; border-radius: 6px; overflow: hidden;
+            margin-top: 1.2rem;
+        }
+        .progress-bar .fill { background: #8b6f50; height: 100%; width: 0%; border-radius: 6px; transition: width 0.4s; }
+
+        .jinju-section {
+            background: #fffcf7; border: 1px solid #e2d7c8;
+            border-radius: 20px; padding: 1.6rem 1.8rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+        }
+        .jinju-section h2 {
+            font-size: 1.15rem; font-weight: 600; color: #4d3e2b;
+            letter-spacing: 1px; border-bottom: 1px solid #dacfc0;
+            padding-bottom: 0.7rem; margin-bottom: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .jinju-section h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
+        .jinju-section .intro-text {
+            font-size: 0.9rem; line-height: 1.8; color: #5a4a38;
+            margin-bottom: 1.2rem; padding: 0.8rem 1.2rem;
+            background: #fcfaf7; border-left: 4px solid #b7a084;
+            border-radius: 10px;
+        }
+        .jinju-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .jinju-grid a {
+            display: block; text-decoration: none;
+            padding: 0.55rem 0.6rem; border-radius: 10px;
+            background: #f7f2ea; transition: 0.15s;
+            font-size: 0.85rem; color: #3d3429;
+            text-align: center; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .jinju-grid a:hover { background: #ede6db; color: #2c1f12; }
+        .jinju-grid a .ref { font-size: 0.7rem; color: #8a7a64; margin-left: 2px; }
+        .jinju-more {
+            text-align: center; padding-top: 0.6rem;
+            border-top: 1px dashed #e2d7c8;
+        }
+        .jinju-more a {
+            display: inline-block; color: #826a4e;
+            background: #f0e9df; border: 1px solid #cbbba8;
+            padding: 0.4rem 2rem; border-radius: 40px;
+            font-size: 0.9rem; text-decoration: none;
+            transition: 0.2s;
+        }
+        .jinju-more a:hover { background: #e8ddd0; border-color: #9b846b; }
+
+        .book-nav {
+            background: #fffcf7; border: 1px solid #e2d7c8;
+            border-radius: 20px; padding: 1.5rem 1.2rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+        }
+        .book-nav h2 {
+            font-size: 1rem; font-weight: 600; color: #4d3e2b;
+            letter-spacing: 1px; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .book-nav h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+        .book-grid a {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0.6rem 0.3rem; border-radius: 10px;
+            text-decoration: none; color: #3d3429;
+            background: #f7f2ea; transition: 0.15s;
+            font-size: 0.85rem; text-align: center;
+        }
+        .book-grid a:hover { background: #ede6db; }
+        .book-grid a .num { font-size: 0.7rem; color: #8a7a64; }
+        .book-grid a .name { font-weight: 500; margin-top: 2px; }
+        .book-grid a.done { background: #e8f0e8; color: #2e5e2e; }
+        .book-grid a.done .num { color: #5a8a5a; }
+        .book-grid a.current { background: #eadecd; color: #2c1f12; }
+        .book-grid a.current .num { color: #8b6f50; }
+        .book-grid a.disabled { opacity: 0.45; pointer-events: none; }
+
+        .section {
+            background: #fffcf7; border: 1px solid #e2d7c8;
+            border-radius: 20px; padding: 1.5rem 1.8rem;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.02);
+        }
+        .section h2 {
+            font-size: 1.3rem; font-weight: 600; color: #4d3e2b;
+            letter-spacing: 1px; border-bottom: 1px solid #dacfc0;
+            padding-bottom: 0.7rem; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section h2 small { font-weight: 400; font-size: 0.8rem; color: #8a7a64; margin-left: auto; }
+        .lesson-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+        .lesson-list li {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.7rem 1rem; border-radius: 12px;
+            background: #f7f2ea; transition: 0.15s;
+        }
+        .lesson-list li a {
+            text-decoration: none; color: #3d3429; font-size: 1rem;
+            display: flex; align-items: center; gap: 10px; width: 100%;
+        }
+        .lesson-list li:hover { background: #ede6db; }
+        .lesson-list li .day-num {
+            background: #dacfc0; color: #3e3225; font-size: 0.75rem;
+            padding: 0.2rem 0.8rem; border-radius: 40px; font-weight: 500;
+            white-space: nowrap;
+        }
+        .lesson-list li .title { font-weight: 450; }
+        .lesson-list li .range { margin-left: auto; font-size: 0.8rem; color: #8a7a64; white-space: nowrap; }
+        .lesson-list li.disabled { opacity: 0.5; background: #f0ede8; pointer-events: none; }
+        .lesson-list li.disabled .day-num { background: #d4cec6; }
+
+        .footer-note {
+            text-align: center; font-size: 0.9rem; color: #8c7a64;
+            border-top: 1px solid #ddd0c0; padding-top: 1.5rem;
+            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+        }
+        @media (max-width: 600px) {
+            body { padding: 1.5rem 1rem; }
+            .intro-row { flex-direction: column; gap: 1rem; text-align: center; }
+            .intro-img { flex: auto; }
+            .intro-img img { width: 120px; }
+            .intro-text h1 { font-size: 1.8rem; letter-spacing: 4px; }
+            .section { padding: 1.2rem 1rem; }
+            .lesson-list li .range { display: none; }
+            .book-grid { grid-template-columns: repeat(4, 1fr); }
+            .jinju-grid { grid-template-columns: repeat(2, 1fr); }
+            .jinju-section { padding: 1.2rem 1rem; }
+        }
+        @media (max-width: 400px) {
+            .book-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <div class="header">
+        <div class="intro-row">
+            <div class="intro-img">
+                <img src="kongzi.jpg" alt="孔子画像">
+                <div class="img-caption">孔子（前551—前479）</div>
+            </div>
+            <div class="intro-text">
+                <h1>📖 论语 · 每日学习</h1>
+                <p>《论语》是记录孔子及其弟子言行的语录体经典，由孔子弟子及再传弟子编纂而成，共二十篇，约一万六千字。全书以“仁”为核心，涵盖为学、修身、为政、处世之道，是儒家思想的奠基之作，也是了解中国文化精神的必读经典。</p>
+            </div>
+        </div>
+        <div class="sub" id="stats">
+            <span>📘 已学 12 天</span>
+            <span id="daysCount">📅 已学 0 天</span>
+            <span id="wordsCount">✍️ 约 0 字</span>
+        </div>
+        <div class="progress-bar"><div class="fill" id="progressFill" style="width: 0%;"></div></div>
+    </div>
+
+    <div class="jinju-section">
+        <h2>📋 论语金句 <small>精选 20 条</small></h2>
+        <div class="intro-text">
+            我们日常挂在嘴边的许多成语，其实都出自《论语》。只是用得久了，便忘了它的来处。这里把出自《论语》的金句与成语汇于一处，既是一份速查，也是一次寻根。
+        </div>
+        <div class="jinju-grid">
+            <a href="lunyu-jinju.html#bylh">不亦乐乎 <span class="ref">1.1</span></a>
+            <a href="lunyu-jinju.html#qyls">巧言令色 <span class="ref">1.3</span></a>
+            <a href="lunyu-jinju.html#sxws">三省吾身 <span class="ref">1.4</span></a>
+            <a href="lunyu-jinju.html#yeyx">言而有信 <span class="ref">1.7</span></a>
+            <a href="lunyu-jinju.html#szzy">慎终追远 <span class="ref">1.9</span></a>
+            <a href="lunyu-jinju.html#wlgjr">温良恭俭让 <span class="ref">1.10</span></a>
+            <a href="lunyu-jinju.html#hwg">和为贵 <span class="ref">1.12</span></a>
+            <a href="lunyu-jinju.html#rqrc">如切如磋 <span class="ref">1.15</span></a>
+            <a href="lunyu-jinju.html#ssel">三十而立 <span class="ref">2.4</span></a>
+            <a href="lunyu-jinju.html#ssbh">四十不惑 <span class="ref">2.4</span></a>
+            <a href="lunyu-jinju.html#ztm">知天命 <span class="ref">2.4</span></a>
+            <a href="lunyu-jinju.html#wgzx">温故知新 <span class="ref">2.11</span></a>
+            <a href="lunyu-jinju.html#jzbq">君子不器 <span class="ref">2.12</span></a>
+            <a href="lunyu-jinju.html#xebs">学而不思则罔 <span class="ref">2.15</span></a>
+            <a href="lunyu-jinju.html#zzwz">知之为知之 <span class="ref">2.17</span></a>
+            <a href="lunyu-jinju.html#ewbx">人而无信 <span class="ref">2.22</span></a>
+            <a href="lunyu-jinju.html#skrs">是可忍孰不可忍 <span class="ref">3.1</span></a>
+            <a href="lunyu-jinju.html#qxqx">巧笑倩兮 <span class="ref">3.8</span></a>
+            <a href="lunyu-jinju.html#jwbb">既往不咎 <span class="ref">3.21</span></a>
+            <a href="lunyu-jinju.html#jmjs">尽美尽善 <span class="ref">3.25</span></a>
+        </div>
+        <div class="jinju-more">
+            <a href="lunyu-jinju.html">✨ 更多金句请点这里 →</a>
+        </div>
+    </div>
+
+    <div class="book-nav">
+        <h2>📚 全书篇目 <small>点击跳转</small></h2>
+        <div class="book-grid">
+            <a href="#xueer" class="done"><span class="num">第一篇</span><span class="name">学而</span></a>
+            <a href="#weizheng" class="done"><span class="num">第二篇</span><span class="name">为政</span></a>
+            <a href="#bayi" class="done"><span class="num">第三篇</span><span class="name">八佾</span></a>
+            <a href="#liren" class="done"><span class="num">第四篇</span><span class="name">里仁</span></a>
+            <a href="#gongye" class="current"><span class="num">第五篇</span><span class="name">公冶长</span></a>
+            <a href="#yongye" class="disabled"><span class="num">第六篇</span><span class="name">雍也</span></a>
+            <a href="#shuer" class="disabled"><span class="num">第七篇</span><span class="name">述而</span></a>
+            <a href="#taibo" class="disabled"><span class="num">第八篇</span><span class="name">泰伯</span></a>
+            <a href="#zihan" class="disabled"><span class="num">第九篇</span><span class="name">子罕</span></a>
+            <a href="#xiangdang" class="disabled"><span class="num">第十篇</span><span class="name">乡党</span></a>
+            <a href="#xianjin" class="disabled"><span class="num">第十一篇</span><span class="name">先进</span></a>
+            <a href="#yanyuan" class="disabled"><span class="num">第十二篇</span><span class="name">颜渊</span></a>
+            <a href="#zilu" class="disabled"><span class="num">第十三篇</span><span class="name">子路</span></a>
+            <a href="#xianwen" class="disabled"><span class="num">第十四篇</span><span class="name">宪问</span></a>
+            <a href="#weilinggong" class="disabled"><span class="num">第十五篇</span><span class="name">卫灵公</span></a>
+            <a href="#jishi" class="disabled"><span class="num">第十六篇</span><span class="name">季氏</span></a>
+            <a href="#yanghuo" class="disabled"><span class="num">第十七篇</span><span class="name">阳货</span></a>
+            <a href="#weizi" class="disabled"><span class="num">第十八篇</span><span class="name">微子</span></a>
+            <a href="#zizhang" class="disabled"><span class="num">第十九篇</span><span class="name">子张</span></a>
+            <a href="#yaoyue" class="disabled"><span class="num">第二十篇</span><span class="name">尧曰</span></a>
+        </div>
+    </div>
+
+    <div class="section" id="xueer">
+        <h2>📗 学而篇第一 <small>共 16 章 · 已完结</small></h2>
+        <ul class="lesson-list">
+            <li>
+                <a href="day1.html" data-words="207">
+                    <span class="day-num">第一天</span>
+                    <span class="title">学而篇 1.1 ~ 1.9</span>
+                    <span class="range">约 207 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day2.html" data-words="276">
+                    <span class="day-num">第二天</span>
+                    <span class="title">学而篇 1.10 ~ 1.16</span>
+                    <span class="range">约 276 字</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="weizheng">
+        <h2>📘 为政篇第二 <small>共 24 章 · 已完结</small></h2>
+        <ul class="lesson-list">
+            <li>
+                <a href="day3.html" data-words="230">
+                    <span class="day-num">第三天</span>
+                    <span class="title">为政篇 2.1 ~ 2.8</span>
+                    <span class="range">约 230 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day4.html" data-words="250">
+                    <span class="day-num">第四天</span>
+                    <span class="title">为政篇 2.9 ~ 2.16</span>
+                    <span class="range">约 250 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day5.html" data-words="240">
+                    <span class="day-num">第五天</span>
+                    <span class="title">为政篇 2.17 ~ 2.24</span>
+                    <span class="range">约 240 字</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="bayi">
+        <h2>📙 八佾篇第三 <small>共 26 章 · 已完结</small></h2>
+        <ul class="lesson-list">
+            <li>
+                <a href="day6.html" data-words="240">
+                    <span class="day-num">第六天</span>
+                    <span class="title">八佾篇 3.1 ~ 3.8</span>
+                    <span class="range">约 240 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day7.html" data-words="250">
+                    <span class="day-num">第七天</span>
+                    <span class="title">八佾篇 3.9 ~ 3.16</span>
+                    <span class="range">约 250 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day8.html" data-words="300">
+                    <span class="day-num">第八天</span>
+                    <span class="title">八佾篇 3.17 ~ 3.26</span>
+                    <span class="range">约 300 字</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="liren">
+        <h2>📕 里仁篇第四 <small>共 26 章 · 已完结</small></h2>
+        <ul class="lesson-list">
+            <li>
+                <a href="day9.html" data-words="230">
+                    <span class="day-num">第九天</span>
+                    <span class="title">里仁篇 4.1 ~ 4.8</span>
+                    <span class="range">约 230 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day10.html" data-words="250">
+                    <span class="day-num">第十天</span>
+                    <span class="title">里仁篇 4.9 ~ 4.16</span>
+                    <span class="range">约 250 字</span>
+                </a>
+            </li>
+            <li>
+                <a href="day11.html" data-words="260">
+                    <span class="day-num">第十一天</span>
+                    <span class="title">里仁篇 4.17 ~ 4.26</span>
+                    <span class="range">约 260 字</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="gongye">
+        <h2>📒 公冶长篇第五 <small>共 28 章 · 连载中</small></h2>
+        <ul class="lesson-list">
+            <li>
+                <a href="day12.html" data-words="250">
+                    <span class="day-num">第十二天</span>
+                    <span class="title">公冶长篇 5.1 ~ 5.8</span>
+                    <span class="range">约 250 字</span>
+                </a>
+            </li>
+            <li class="disabled">
+                <span class="day-num">第十三天</span>
+                <span class="title">公冶长篇 5.9 ~ 5.16</span>
+                <span class="range">待更新</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="footer-note">
+        <span>📚 每天 200 字 · 三个月通读</span>
+        <span>🔖 一年四遍 · 熟读精思</span>
+    </div>
+</div>
+
+<script>
+(function() {
+    var links = document.querySelectorAll('.lesson-list li a[data-words]');
+    var totalDays = links.length;
+    var totalWords = 0;
+    links.forEach(function(link) {
+        var w = parseInt(link.getAttribute('data-words'), 10);
+        if (!isNaN(w)) totalWords += w;
+    });
+    var daysEl = document.getElementById('daysCount');
+    var wordsEl = document.getElementById('wordsCount');
+    if (daysEl) daysEl.textContent = '📅 已学 ' + totalDays + ' 天';
+    if (wordsEl) wordsEl.textContent = '✍️ 约 ' + totalWords + ' 字';
+
+    var totalBookWords = 16000;
+    var percent = Math.min(100, Math.round((totalWords / totalBookWords) * 100));
+    var fillEl = document.getElementById('progressFill');
+    if (fillEl) fillEl.style.width = percent + '%';
+
+    document.querySelectorAll('.book-grid a[href^="#"]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+})();
+</script>
+</body>
+</html>
